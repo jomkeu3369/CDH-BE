@@ -1,4 +1,5 @@
 from fastapi import FastAPI
-from typing import Union
+from api.routers import tasks
 
-app = FastAPI()
+app = FastAPI(redoc_url=None)
+app.include_router(tasks.router)
