@@ -4,5 +4,10 @@ import os
 router = APIRouter()
 
 @router.get("/version")
-async def main():
+async def get_version():
     return {"version": os.getenv("version")}
+
+@round.get("/")
+async def main():
+    return {"message": "Main_page"}
+    
