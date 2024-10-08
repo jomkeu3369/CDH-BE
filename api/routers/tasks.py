@@ -7,7 +7,7 @@ router = APIRouter()
 async def get_version():
     return {"version": os.getenv("version")}
 
-@round.get("/")
+@router.get("/")
 async def main():
     return {"message": "Main_page"}
     
