@@ -6,14 +6,9 @@ services:
     container_name: local
     ports:
       - "8000:8000"
-    environment:
-      - version=local
-      - DB_user = "root"
-      - DB_host = "demo"
-      - DB_port = 3306
-      - DOCKER_USERNAME = "tmddnjs3369"
-      - DOCKER_FILENAME = "j3pbl"
-
+    env_file:
+      - .env
+      
   db:
     image: mysql:8.0
     platform: linux/x86_64
