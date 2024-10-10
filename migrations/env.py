@@ -16,7 +16,7 @@ from urllib.parse import quote
 load_dotenv()
 config = context.config
 
-db_url = f"mysql+aiomysql://{os.getenv('DB_user')}:{quote(os.getenv('DB_password'))}@localhost:{os.getenv('DB_port', '3306')}/{os.getenv('DB_host')}?charset=utf8"
+db_url = f"mysql+aiomysql://{os.getenv('DB_user')}:{quote(os.getenv('DB_password'))}@{os.getenv('DB_host')}:{os.getenv('DB_port', '3306')}/demo?charset=utf8"
 
 config.set_main_option("sqlalchemy.url", db_url)
 
