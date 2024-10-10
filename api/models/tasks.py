@@ -103,8 +103,8 @@ class AdminLogs(Base):
 
     log_id = Column(Integer, primary_key=True)
     admin_id = Column(Integer, ForeignKey('admin_info.admin_id'), nullable=False)
-    target_table = Column(String, nullable=False)
-    action = Column(String, nullable=False, default='50')
+    target_table = Column(String(199), nullable=False)
+    action = Column(String(100), nullable=False, default='50')
     created_at = Column(DateTime, nullable=False)
     target_id = Column(Integer, nullable=False)
 
