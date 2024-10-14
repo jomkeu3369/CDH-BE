@@ -1,0 +1,44 @@
+
+from pydantic import BaseModel, EmailStr, field_validator
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    
+class UserCreate(BaseModel):
+    username: str
+    password1: str
+    password2: str
+    email: EmailStr
+    gender: bool
+
+    @field_validator('username', 'password1', 'password2', 'email', mode='before')
+    def not_empty_string(cls, v):
+        if not v or not v.strip():
+            raise ValueError('빈 값은 허용되지 않습니다.')
+        return v
+
+    @field_validator('gender', mode='before')
+    def validate_gender(cls, v):
+        if not isinstance(v, bool):
+            raise ValueError('gender 필드는 bool 타입이어야 합니다.')
+        return v
+
+    @field_validator('password2', mode='before')
+    def passwords_match(cls, v, info):
+        password1 = info.data.get('password1')
+        if password1 and v != password1:
+            raise ValueError('비밀번호가 일치하지 않습니다.')
+        return v
+
+class Token(BaseModel):
+    token: str
+    user_id: int
+
+class User(BaseModel):
+    id: int
+    username: str
+    email: str
+
+    class Config:
+        orm_mode = True

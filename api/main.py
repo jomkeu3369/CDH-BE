@@ -1,6 +1,11 @@
 from fastapi import FastAPI
-from api.routers import tasks
+from api.domain.user import user_router
+import os
 
 app = FastAPI()
 
-app.include_router(tasks.router)
+@app.get("/version")
+async def get_version():
+    return {"version": os.getenv("version")}
+
+app.include_router(user_router.router)
