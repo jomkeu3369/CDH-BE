@@ -30,10 +30,10 @@ async def get_existing_user(db: Session, user_create: UserCreate):
 
 async def get_user(db: Session, username: str):
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.nickname == username))
-    return result.scalar_one()
+    return result.scalar_one_or_none() # 반드시 하나 이상의 결과가 있어야 할 때
 
 async def get_user_by_email(db: Session, email: str):
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.email == email))
-    return result.scalar_one()
+    return result.scalar_one_or_none()
 
 

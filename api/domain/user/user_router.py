@@ -40,7 +40,7 @@ async def user_create(_user_create: user_schema.UserCreate, db: Session = Depend
 async def login_for_access_token(form_data:user_schema.LoginRequest, db: Session = Depends(get_db)):
 
     user = await user_crud.get_user_by_email(db, form_data.email)
-    if not user or not pwd_context.verify(form_data.password, user.pwd):
+    if user is None or not pwd_context.verify(form_data.password, user.pwd):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="이메일 또는 비밀번호가 잘못 입력되었습니다.",
