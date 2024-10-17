@@ -16,7 +16,7 @@ class UserInfo(Base):
     created_at = Column(DateTime, nullable=False, default=datetime.now, comment='자동')
     updated_at = Column(DateTime, nullable=True)
 
-    # settings = relationship("Settings", back_populates="user_info", cascade="all, delete, delete-orphan")
+    settings = relationship("Settings", back_populates="user_info", cascade="all, delete, delete-orphan")
     notes = relationship("Notes", back_populates="user_info", cascade="all, delete, delete-orphan")
     calendars = relationship("Calendars", back_populates="user_info", cascade="all, delete, delete-orphan")
     agreements = relationship("Agreement", back_populates="user_info", cascade="all, delete, delete-orphan")
@@ -24,16 +24,16 @@ class UserInfo(Base):
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan")
 
 
-# class Settings(Base): # pk 오류
-#     __tablename__ = 'settings'
+class Settings(Base): # pk 오류
+    __tablename__ = 'settings'
 
-#     pk = Column(Integer, primary_key=True, autoincrement=True, comment="설정 고유 아이디")
-#     # user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-#     theme = Column(String(7), nullable=False, comment='hax color')
-#     font_size = Column(Integer, nullable=False, default=17)
-#     updated_at = Column(DateTime, nullable=True)
+    pk = Column(Integer, primary_key=True, autoincrement=True, comment="설정 고유 아이디")
+    user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
+    theme = Column(String(7), nullable=False, comment='hax color')
+    font_size = Column(Integer, nullable=False, default=17)
+    updated_at = Column(DateTime, nullable=True)
 
-#     # user_info = relationship("UserInfo", back_populates="settings")
+    user_info = relationship("UserInfo", back_populates="settings")
 
 
 class Notes(Base):
