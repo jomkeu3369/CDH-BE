@@ -24,4 +24,3 @@ def login():
     print(req.json())
 
 login()
-

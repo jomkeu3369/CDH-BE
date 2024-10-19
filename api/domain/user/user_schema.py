@@ -18,6 +18,12 @@ class UserCreate(BaseModel):
             raise ValueError('빈 값은 허용되지 않습니다.')
         return v
 
+    @field_validator('username')
+    def validate_username_length(cls, v):
+        if len(v) > 20:
+            raise ValueError('닉네임이 너무 깁니다. 20자 이내로 입력해주세요.')
+        return v
+        
     @field_validator('gender', mode='before')
     def validate_gender(cls, v):
         if not isinstance(v, bool):
@@ -32,8 +38,14 @@ class UserCreate(BaseModel):
         return v
 
 class Token(BaseModel):
-    token: str
+    access_token: str
+    token_type: str
     user_id: int
+
+class TokenAuth(BaseModel):
+    access_token: str
+    token_type: str
+    username: str
 
 class User(BaseModel):
     id: int

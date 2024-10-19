@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, Integer, String, Text, DateTime, Boolean, ForeignKey, Enum
+from sqlalchemy import create_engine, Column, Integer, Integer, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 from api.database import Base
@@ -29,7 +29,7 @@ class Settings(Base): # pk 오류
 
     pk = Column(Integer, primary_key=True, autoincrement=True, comment="설정 고유 아이디")
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    theme = Column(String(7), nullable=False, comment='hax color')
+    theme = Column(String(20), nullable=False, comment='color string', default="dark")
     font_size = Column(Integer, nullable=False, default=17)
     updated_at = Column(DateTime, nullable=True)
 
