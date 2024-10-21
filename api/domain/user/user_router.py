@@ -22,7 +22,7 @@ router = APIRouter(
     prefix="/stack/api/v1",
 )
 
-@router.post("/signup", status_code=status.HTTP_201_CREATED)
+@router.post("/signup", status_code=status.HTTP_201_CREATED, tags=["login"])
 async def user_create(_user_create: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
     user = await user_crud.get_existing_user(db, user_create=_user_create)
     if user:
@@ -40,7 +40,7 @@ async def user_create(_user_create: user_schema.UserCreate, db: AsyncSession = D
         "message": "회원가입이 완료되었습니다."
     }
 
-@router.post("/login", response_model=user_schema.Token)
+@router.post("/login", response_model=user_schema.Token, tags=["login"])
 async def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
 
     user = await user_crud.get_user_by_email(db, form_data.username)

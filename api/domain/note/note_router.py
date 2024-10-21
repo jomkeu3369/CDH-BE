@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 # 전체 노트 조회
-@router.get("/notes", response_model=note_schema.NoteList)
+@router.get("/notes", response_model=note_schema.NoteList, tags=["notes"])
 async def note_list(db: note_schema = Depends(get_db), page: int = 0, size: int = 10, keyword: str = '',
                     current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     total, _note_list = await note_crud.search_notes(db, user=current_user, skip=page * size, limit=size, keyword=keyword)
@@ -27,7 +27,7 @@ async def note_list(db: note_schema = Depends(get_db), page: int = 0, size: int 
     }
 
 # 노트 조회
-@router.get("/notes/{note_id}", response_model=note_schema.Notes)
+@router.get("/notes/{note_id}", response_model=note_schema.Notes, tags=["notes"])
 async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
                    current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     note = await note_crud.get_note(db, note_id=note_id)
@@ -41,13 +41,13 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     return note
 
 # 노트 생성
-@router.post("/note", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/note", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
 async def note_create(_note_create: note_schema.NoteCreate, db: AsyncSession = Depends(get_db),
                           current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     await note_crud.create_note(db=db, note_create=_note_create, user=current_user)
 
 # 노트 업데이트
-@router.patch("/update", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch("/update", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
 async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = Depends(get_db),
                           current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     db_note = await note_crud.get_note(db, note_id=_note_update.note_id)
@@ -61,7 +61,7 @@ async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = D
     await note_crud.update_note(db=db, db_note=db_note, note_update=_note_update)
 
 # 노트 삭제
-@router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
 async def note_delete(_note_delete: note_schema.NoteDelete, db: AsyncSession = Depends(get_db),
                           current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     db_note = await note_crud.get_note(db, note_id=_note_delete.note_id)

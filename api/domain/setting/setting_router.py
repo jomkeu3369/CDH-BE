@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 # 설정 조회
-@router.get("/setting", response_model=setting_schema.settingResponse)
+@router.get("/setting", response_model=setting_schema.settingResponse, tags=["setting"])
 async def get_setting(db: AsyncSession = Depends(get_db),
                       current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     db_setting = await setting_crud.get_setting(db, current_user.user_id)
@@ -26,7 +26,7 @@ async def get_setting(db: AsyncSession = Depends(get_db),
     return db_setting
 
 # 설정 조회
-@router.put("/setting", response_model=None)
+@router.put("/setting", response_model=None, tags=["setting"])
 async def get_setting(_setting_update: setting_schema.settingCreate,
                     db: AsyncSession = Depends(get_db),
                     current_user:tasks.UserInfo = Depends(user_router.get_current_user)):

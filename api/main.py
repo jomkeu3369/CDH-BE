@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-@app.get("/version")
+@app.get("/version", tags=["root"])
 async def get_version():
     return {"version": os.getenv("version")}
 
