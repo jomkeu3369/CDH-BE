@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
+from typing import Optional
 import datetime
 
 class NoteRequest(BaseModel):
@@ -25,7 +26,9 @@ class NoteCreate(BaseModel):
             raise ValueError('빈 값은 허용되지 않습니다.')
         return v
     
-class NoteUpdate(NoteCreate):
+class NoteUpdate(BaseModel):
+    title: Optional[str]
+    content: Optional[str]
     note_id: int
 
 class NoteList(BaseModel):
