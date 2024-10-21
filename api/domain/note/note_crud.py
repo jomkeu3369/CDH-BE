@@ -34,8 +34,10 @@ async def create_note(db: AsyncSession, note_create: note_schema.NoteCreate, use
     await db.refresh(db_note)
 
 async def update_note(db: AsyncSession, db_note: Notes, note_update: note_schema.NoteUpdate):
-    db_note.title = note_update.title
-    db_note.content = note_update.content
+    if note_update.title is not None:
+        db_note.title = note_update.title
+    if note_update.content is not None:   
+        db_note.content = note_update.content
     db_note.updated_at = datetime.now()
     db.add(db_note)
     await db.commit()

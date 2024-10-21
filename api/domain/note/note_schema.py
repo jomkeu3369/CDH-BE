@@ -27,8 +27,8 @@ class NoteCreate(BaseModel):
         return v
     
 class NoteUpdate(BaseModel):
-    title: Optional[str]
-    content: Optional[str]
+    title: Optional[str] = None
+    content: Optional[str] = None
     note_id: int
 
 class NoteList(BaseModel):
