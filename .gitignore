@@ -4,3 +4,4 @@
 .env.production.local
 .env.local
 /api_testing/
+/langchain/

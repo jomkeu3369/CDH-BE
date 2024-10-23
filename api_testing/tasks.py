@@ -15,11 +15,10 @@ def signup():
 
 def login():
     data = {
-    "email": "test_tmddnjs3369@naver.com",
-    "password": "qwer1234"
+        "username": "tmddnjs01@naver.com",
+        "password": "qwer1234"
     }
-
-    req = requests.post("http://j3pbl.kro.kr/stack/api/v1/login", json=data)
+    req = requests.post("http://j3pbl.kro.kr/stack/api/v1/login", data=data)
     print(req.status_code)
     print(req.json())
 
