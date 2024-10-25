@@ -8,7 +8,10 @@ from datetime import datetime
 class UserInfo(Base):
     __tablename__ = 'user_info'
 
-    user_id = Column(Integer, primary_key=True, autoincrement=True, comment='사용자 고유 아이디')
+    '''
+        [2024-10-24 PM 20:12:11] user_id 항목을 pk로 변경하고 user_id 항목을 만들어서 UUID로 변경 검토
+    '''
+    user_id = Column(Integer, primary_key=True, autoincrement=True, comment='사용자 고유 아이디') 
     nickname = Column(String(20), nullable=True)
     pwd = Column(String(60), nullable=False, comment='암호화')
     email = Column(String(320), nullable=True)
@@ -24,7 +27,7 @@ class UserInfo(Base):
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan")
 
 
-class Settings(Base): # pk 오류
+class Settings(Base):
     __tablename__ = 'settings'
 
     pk = Column(Integer, primary_key=True, autoincrement=True, comment="설정 고유 아이디")
