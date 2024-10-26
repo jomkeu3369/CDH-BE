@@ -7,7 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 import os
 
 app = FastAPI(
-  title="J3 Together team PBL server",
+  title="PBL server for J3 Together teams",
   version="1.0",
   description="The backend server that contains the J3 together team's Langchains.",
 )
