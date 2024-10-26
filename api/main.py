@@ -9,7 +9,7 @@ import os
 app = FastAPI(
   title="PBL server for J3 Together teams",
   version="1.0",
-  description="The backend server that contains the J3 together team's Langchains.",
+  description="캡스톤 디자인 H조 백엔드 서버입니다.",
 )
 
 origins = [
