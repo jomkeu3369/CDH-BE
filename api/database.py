@@ -9,8 +9,7 @@ ASYNC_DB_URL = f"mysql+aiomysql://{os.getenv('DB_user')}:{os.getenv('DB_password
 
 async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
 async_session = sessionmaker(
-    autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession
-)
+    autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base()
 
 async def get_db():
