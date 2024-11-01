@@ -37,7 +37,8 @@ async def put_setting(_setting_update: setting_schema.settingCreate,
     if current_user.user_id != db_setting.user_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="수정 권한이 없습니다.")
+    
     await setting_crud.update_setting(db=db, create=_setting_update, original=db_setting)
-
+    
     updated_setting = await setting_crud.get_setting(db, current_user.user_id)
     return updated_setting
