@@ -47,7 +47,7 @@ async def note_create(_note_create: note_schema.NoteCreate, db: AsyncSession = D
     await note_crud.create_note(db=db, note_create=_note_create, user=current_user)
 
 # 노트 업데이트
-@router.patch("/notes/update", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
+@router.patch("/notes/update", status_code=status.HTTP_200_OK, tags=["notes"])
 async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = Depends(get_db),
                           current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     db_note = await note_crud.get_note(db, note_id=_note_update.note_id)
@@ -59,6 +59,9 @@ async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = D
                             detail="수정 권한이 없습니다.")
     
     await note_crud.update_note(db=db, db_note=db_note, note_update=_note_update)
+    update_note = await note_crud.get_note(db, note_id=_note_update.note_id)
+    return update_note
+
 
 # 노트 삭제
 @router.delete("/notes/delete", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
