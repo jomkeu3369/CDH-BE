@@ -26,7 +26,7 @@ async def get_setting(db: AsyncSession = Depends(get_db),
     return db_setting
 
 # 세팅 업데이트
-@router.put("/setting", response_model=None, tags=["setting"])
+@router.put("/setting", response_model=setting_schema.settingResponse, tags=["setting"])
 async def put_setting(_setting_update: setting_schema.settingCreate,
                     db: AsyncSession = Depends(get_db),
                     current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
