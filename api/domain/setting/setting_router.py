@@ -25,9 +25,9 @@ async def get_setting(db: AsyncSession = Depends(get_db),
     
     return db_setting
 
-# 설정 조회
+# 세팅 업데이트
 @router.put("/setting", response_model=None, tags=["setting"])
-async def get_setting(_setting_update: setting_schema.settingCreate,
+async def put_setting(_setting_update: setting_schema.settingCreate,
                     db: AsyncSession = Depends(get_db),
                     current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
     db_setting = await setting_crud.get_setting(db, current_user.user_id)
@@ -38,4 +38,6 @@ async def get_setting(_setting_update: setting_schema.settingCreate,
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="수정 권한이 없습니다.")
     await setting_crud.update_setting(db=db, create=_setting_update, original=db_setting)
-    return {"message": "설정 수정"}
+
+    updated_setting = await setting_crud.get_setting(db, current_user.user_id)
+    return updated_setting
