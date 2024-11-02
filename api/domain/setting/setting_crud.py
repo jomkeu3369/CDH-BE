@@ -23,7 +23,7 @@ async def create_setting(db: AsyncSession, user:UserInfo):
 
 async def update_setting(db: AsyncSession, create:settingCreate, original: Settings) -> Settings:
     original.theme = create.theme
-    original.font_size = original.font_size
+    original.font_size = create.font_size
     db.add(original)
     await db.commit()
     await db.refresh(original)
