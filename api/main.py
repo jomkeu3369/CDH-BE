@@ -4,6 +4,9 @@ from api.domain.setting import setting_router
 from api.domain.note import note_router
 from starlette.middleware.cors import CORSMiddleware
 
+from langchain_openai import ChatOpenAI
+from langserve import add_routes
+
 import os
 
 app = FastAPI(
@@ -31,3 +34,16 @@ async def get_version():
 app.include_router(user_router.router)
 app.include_router(setting_router.router)
 app.include_router(note_router.router)
+app.include_router(note_router.router)
+
+model = ChatOpenAI(
+    model="gpt-4o",
+    max_tokens=2048,
+    temperature=0.1,
+)
+
+add_routes(
+    app,
+    model,
+    path="/openai"
+)
