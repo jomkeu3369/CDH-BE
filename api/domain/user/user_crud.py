@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.domain.user.user_schema import UserCreate, SocialMember
+from api.domain.user.user_schema import UserCreate, SocialMember, SnsType
 from api.models.ORM import UserInfo
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -13,7 +13,8 @@ async def create_user(db: AsyncSession, user_create: UserCreate):
     db_user = UserInfo(nickname=user_create.username,
                    pwd=pwd_context.hash(user_create.password1),
                    email=user_create.email,
-                   gender=user_create.gender)
+                   gender=user_create.gender,
+                   provider_type=SnsType.email)
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)

@@ -34,15 +34,6 @@ google_oauth2_scheme = OAuth2AuthorizationCodeBearer(
     scopes={"email": "email", "profile": "profile", "openid": "openid"}
 )
 
-class AuthDependencies:
-    def __init__(
-        self,
-        dep1: Annotated[str, Depends(google_oauth2_scheme)],
-        dep2: Annotated[str, Depends(oauth2_scheme)]
-    ):
-        self.dep1 = dep1
-        self.dep2 = dep2
-
 router = APIRouter(
     prefix="/stack/api/v1",
 )
