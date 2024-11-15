@@ -3,7 +3,7 @@ from sqlalchemy import select, func
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from api.models.tasks import Notes, UserInfo
+from api.models.ORM import Notes, UserInfo
 from api.domain.note import note_schema
 
 async def search_notes(db: AsyncSession, user: UserInfo, skip: int = 0, limit: int = 10, keyword: str = ''):

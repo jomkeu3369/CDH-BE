@@ -8,7 +8,7 @@ from starlette import status
 from api.database import get_db
 from api.domain.setting import setting_crud, setting_schema
 from api.domain.user import user_crud, user_router
-from api.models import tasks
+from api.models import ORM
 
 from api.domain.note import note_crud, note_schema
 
@@ -19,7 +19,7 @@ router = APIRouter(
 # 전체 노트 조회
 @router.get("/notes", response_model=note_schema.NoteList, tags=["notes"])
 async def note_list(db: note_schema = Depends(get_db), page: int = 0, size: int = 10, keyword: str = '',
-                    current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
+                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     total, _note_list = await note_crud.search_notes(db, user=current_user, skip=page * size, limit=size, keyword=keyword)
     return {
         'total': total,
@@ -29,7 +29,7 @@ async def note_list(db: note_schema = Depends(get_db), page: int = 0, size: int 
 # 노트 조회
 @router.get("/notes/{note_id}", response_model=note_schema.Notes, tags=["notes"])
 async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
-                   current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
+                   current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     note = await note_crud.get_note(db, note_id=note_id)
     if not note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -43,13 +43,13 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
 # 노트 생성
 @router.post("/note", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
 async def note_create(_note_create: note_schema.NoteCreate, db: AsyncSession = Depends(get_db),
-                          current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
+                          current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     await note_crud.create_note(db=db, note_create=_note_create, user=current_user)
 
 # 노트 업데이트
 @router.patch("/notes/update", status_code=status.HTTP_200_OK, tags=["notes"])
 async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = Depends(get_db),
-                          current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
+                          current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     db_note = await note_crud.get_note(db, note_id=_note_update.note_id)
     if not db_note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -66,7 +66,7 @@ async def note_update(_note_update: note_schema.NoteUpdate, db: AsyncSession = D
 # 노트 삭제
 @router.delete("/notes/delete", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
 async def note_delete(_note_delete: note_schema.NoteDelete, db: AsyncSession = Depends(get_db),
-                          current_user:tasks.UserInfo = Depends(user_router.get_current_user)):
+                          current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     db_note = await note_crud.get_note(db, note_id=_note_delete.note_id)
     if not db_note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,

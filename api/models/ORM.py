@@ -13,12 +13,14 @@ class UserInfo(Base):
     '''
     user_id = Column(Integer, primary_key=True, autoincrement=True, comment='사용자 고유 아이디') 
     nickname = Column(String(20), nullable=True)
-    pwd = Column(String(60), nullable=False, comment='암호화')
+    pwd = Column(String(60), nullable=True, comment='암호화')
     email = Column(String(320), nullable=True)
-    gender = Column(Boolean, nullable=False, comment='True : 남자, False : 여자')
+    provider_id = Column(String(30), nullable=True, comment="Oauth 제공자가 local이 아닌 경우에만 작성")
+    provider_type = Column(String(20), nullable=False, comment="Oauth 제공자 정보")
+    gender = Column(Boolean, nullable=True, comment='True : 남자, False : 여자')
     created_at = Column(DateTime, nullable=False, default=datetime.now, comment='자동')
     updated_at = Column(DateTime, nullable=True)
-
+    
     settings = relationship("Settings", back_populates="user_info", cascade="all, delete, delete-orphan")
     notes = relationship("Notes", back_populates="user_info", cascade="all, delete, delete-orphan")
     calendars = relationship("Calendars", back_populates="user_info", cascade="all, delete, delete-orphan")

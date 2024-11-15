@@ -20,6 +20,8 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 langserve = {extras = ["all"], version = "^0.3.0"}
 langchain-openai = "^0.2.5"
 langchain = "^0.3.7"
+google = "^3.0.0"
+google-auth = "^2.36.0"
 
 
 [build-system]

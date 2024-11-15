@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.domain.user.user_schema import UserCreate
-from api.models.tasks import UserInfo
+from api.domain.user.user_schema import UserCreate, SocialMember
+from api.models.ORM import UserInfo
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -27,6 +27,15 @@ async def get_existing_user(db: AsyncSession, user_create: UserCreate):
     )
     return result.scalars().all()
 
+async def create_social_user(db: AsyncSession, user_create: SocialMember):
+    db_user = UserInfo(nickname=user_create.nickname,
+                   email=user_create.email,
+                   provider_type=user_create.provider.name,
+                   provider_id=int(user_create.provider_id))
+    db.add(db_user)
+    await db.commit()
+    await db.refresh(db_user)
+
 async def get_user(db: AsyncSession, username: str) -> UserInfo:
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.nickname == username))
     return result.scalar_one_or_none()
@@ -39,4 +48,6 @@ async def get_user_by_email(db: AsyncSession, email: str) -> UserInfo:
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.email == email))
     return result.scalar_one_or_none()
 
-
+async def get_user_by_sub(db: AsyncSession, sub: str) -> UserInfo:
+    result : Result = await db.execute(select(UserInfo).filter(UserInfo.provider_id == sub))
+    return result.scalar_one_or_none()

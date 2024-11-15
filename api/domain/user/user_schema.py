@@ -1,5 +1,7 @@
 
 from pydantic import BaseModel, EmailStr, field_validator
+from enum import Enum
+from typing import Optional, Union
 
 class LoginRequest(BaseModel):
     email: str
@@ -54,3 +56,18 @@ class User(BaseModel):
 
     class Config:
         orm_mode = True
+
+class SnsType(str, Enum):
+    ''' 로그인 시 Oauth 제공자 선택 '''
+    google: str = "google"
+    email: str = "email"
+
+class SocialLogin(BaseModel):
+    code: str
+
+class SocialMember(BaseModel):
+    token: str
+    email: Optional[str]
+    nickname: Optional[str] = None
+    provider: Union[str, SnsType]
+    provider_id: int

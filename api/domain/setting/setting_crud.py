@@ -5,7 +5,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.domain.setting.setting_schema import settingCreate
-from api.models.tasks import UserInfo, Settings
+from api.models.ORM import UserInfo, Settings
 
 async def get_setting(db:AsyncSession, user_id:int):
     result : Result = await db.execute(select(Settings).filter(Settings.user_id == user_id))

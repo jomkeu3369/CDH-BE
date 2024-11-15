@@ -9,8 +9,8 @@ from alembic import context
 import os
 from dotenv import load_dotenv
 
-from api.models.tasks import Base
-from api.models.tasks import *
+from api.models.ORM import Base
+from api.models.ORM import *
 from urllib.parse import quote
 
 load_dotenv()
