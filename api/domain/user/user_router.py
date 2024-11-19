@@ -115,7 +115,7 @@ async def auth_callback(provider: user_schema.SnsType, code: str, db: AsyncSessi
         case _:
             raise HTTPException(status_code=400, detail="Invalid provider")
 
-async def get_current_user(token = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+async def get_current_user(token = Depends(oauth2_scheme), token2 = Depends(google_oauth2_scheme), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="access token의 정보가 잘못되었습니다.",
@@ -124,8 +124,7 @@ async def get_current_user(token = Depends(oauth2_scheme), db: AsyncSession = De
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print(payload)
-        
+
         provider_type = payload.get("provider_type")
         user_id: str = payload.get("sub")
         if provider_type == user_schema.SnsType.google:
