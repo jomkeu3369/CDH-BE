@@ -31,7 +31,7 @@ async def auth_google(code: str):
             token_data = response.json()
             id_info = id_token.verify_oauth2_token(token_data["id_token"], requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=10)
             
-            data =  {    
+            data = {    
                 "sub": id_info["sub"],   
                 "exp": id_info["exp"],
                 "provider_type": SnsType.google
