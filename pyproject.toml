@@ -19,11 +19,15 @@ python-multipart = "^0.0.12"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 langserve = {extras = ["all"], version = "^0.3.0"}
 langchain-openai = "^0.2.5"
-langchain = "^0.3.7"
+langchain = {extras = ["all"], version = "^0.3.7"}
 google = "^3.0.0"
 google-auth = "^2.36.0"
 langchain-community = "^0.3.7"
 duckduckgo-search = "^6.3.5"
+pip = "^24.3.1"
+langchain-teddynote = "^0.3.30"
+langchain-chroma = "^0.1.4"
+chromadb = "^0.5.20"
 
 
 [build-system]

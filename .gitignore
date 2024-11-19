@@ -5,3 +5,4 @@
 .env.local
 /api_testing/
 /langchain/
+/chroma/
