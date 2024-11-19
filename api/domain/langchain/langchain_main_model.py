@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from langchain_teddynote import logging
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
-from langchain_chroma import Chroma
+# from langchain_chroma import Chroma
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
@@ -78,16 +78,16 @@ sum_template = """
 #  검색기 설정
 # -----------------------------------
 
-persist_db = Chroma(
-    persist_directory=DB_PATH,
-    embedding_function=OpenAIEmbeddings(),
-    collection_name="my_db",
-)
+# persist_db = Chroma(
+#     persist_directory=DB_PATH,
+#     embedding_function=OpenAIEmbeddings(),
+#     collection_name="my_db",
+# )
 
-VectorStore_retriever = persist_db.as_retriever(
-    search_type="similarity_score_threshold",
-    search_kwargs={"k":1, "score_threshold": 0.8}
-)
+# VectorStore_retriever = persist_db.as_retriever(
+#     search_type="similarity_score_threshold",
+#     search_kwargs={"k":1, "score_threshold": 0.8}
+# )
 
 def combine_sources(inputs):
     web_search = inputs["web_search"]
@@ -110,7 +110,7 @@ search = DuckDuckGoSearchResults(api_wrapper=wrapper, source="text")
 # -----------------------------------
 
 prompt = PromptTemplate.from_template(template)
-sum_prompt = PromptTemplate.format_prompt(sum_template)
+# sum_prompt = PromptTemplate.format_prompt(sum_template)
 
 model = ChatOpenAI(
     model="gpt-3.5-turbo",
@@ -118,25 +118,23 @@ model = ChatOpenAI(
     temperature=0.7,
 )
 
-sum_chain = (
-    sum_prompt | model | output_parser
-)
+# sum_chain = sum_prompt | model | output_parser
 
-chain = (
-    {
-        "note_data" : get_note,
-        "web_search": get_note | sum_chain | search,
-        "vector_docs": get_note | sum_chain | VectorStore_retriever | format_docs,
-        "note_id": RunnablePassthrough
-    }
-    | RunnableLambda(lambda x: {"context": combine_sources(x), "note_data": x["note_data"]})
-    | prompt
-    | model
-    | output_parser
-)
+# chain = (
+#     {
+#         "note_data" : get_note,
+#         "web_search": get_note | sum_chain | search,
+#         "vector_docs": get_note | sum_chain | VectorStore_retriever | format_docs,
+#         "note_id": RunnablePassthrough
+#     }
+#     | RunnableLambda(lambda x: {"context": combine_sources(x), "note_data": x["note_data"]})
+#     | prompt
+#     | model
+#     | output_parser
+# )
 
 # 노트 ID
-# chain = prompt | model | output_parser
+chain = prompt | model | output_parser
 
 
 # -----------------------------------
