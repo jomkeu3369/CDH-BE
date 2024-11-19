@@ -85,8 +85,7 @@ async def login(provider: user_schema.SnsType):
     match provider:
         case "google":
             return RedirectResponse(
-                f"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope={GOOGLE_SCOPE}",
-                status_code=302
+                f"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope={GOOGLE_SCOPE}"
             )
         case _:
             raise HTTPException(status_code=400, detail="Invalid provider")
@@ -125,7 +124,8 @@ async def get_current_user(token = Depends(oauth2_scheme), db: AsyncSession = De
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
+        print(payload)
+        
         provider_type = payload.get("provider_type")
         user_id: str = payload.get("sub")
         if provider_type == user_schema.SnsType.google:

@@ -43,18 +43,18 @@ model = ChatOpenAI(
     temperature=0.7,
 )
 
-chain = (
-    {
-        "web_search": search,
-        "vector_docs": VectorStore_retriever | format_docs,
-        "erd_data": search,
-        "api_data": VectorStore_retriever | format_docs,
-        "note_data": note,
-    }
-    | RunnableLambda(lambda x: {"context": combine_sources(x), "question": x["question"]})
-    | prompt
-    | model
-    | output_parser
-)
+# chain = (
+#     {
+#         "web_search": search,
+#         "vector_docs": VectorStore_retriever | format_docs,
+#         "erd_data": search,
+#         "api_data": VectorStore_retriever | format_docs,
+#         "note_data": note,
+#     }
+#     | RunnableLambda(lambda x: {"context": combine_sources(x), "question": x["question"]})
+#     | prompt
+#     | model
+#     | output_parser
+# )
 
 chain = prompt | model | output_parser
