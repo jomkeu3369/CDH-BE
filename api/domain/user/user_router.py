@@ -96,7 +96,7 @@ async def auth_callback(provider: user_schema.SnsType, code: str, db: AsyncSessi
         case "google":
             auth_google = await user_login_handler.auth_google(code)
             if auth_google is not None:
-                user_sub = auth_google["provider_id"]
+                user_sub = auth_google["sub"]
                 user_data = await user_crud.get_user_by_sub(db, user_sub)
 
                 if not user_data:
