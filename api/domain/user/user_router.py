@@ -68,9 +68,10 @@ async def login_for_access_token(form_data:OAuth2PasswordRequestForm = Depends()
         )
 
     data = {    
-        "sub": str(user.user_id),
-        "exp": datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
-    }
+            "sub": str(user.user_id),   
+            "exp": datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES)),
+            "provider_type": user_schema.SnsType.email
+        }
     access_token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
 
     return user_schema.Token(
@@ -84,7 +85,8 @@ async def login(provider: user_schema.SnsType):
     match provider:
         case "google":
             return RedirectResponse(
-                f"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope={GOOGLE_SCOPE}"
+                f"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope={GOOGLE_SCOPE}",
+                status_code=302
             )
         case _:
             raise HTTPException(status_code=400, detail="Invalid provider")
@@ -102,11 +104,7 @@ async def auth_callback(provider: user_schema.SnsType, code: str, db: AsyncSessi
                     await user_crud.create_social_user(db, auth_google) 
                 user_info = await user_crud.get_user_by_sub(db, user_sub)
 
-                data = {    
-                    "sub": user_info.user_id,
-                    "exp": datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
-                }
-                access_token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+                access_token = jwt.encode(auth_google, SECRET_KEY, algorithm=ALGORITHM)
 
                 return user_schema.Token(
                     user_id=user_info.user_id,
@@ -118,24 +116,35 @@ async def auth_callback(provider: user_schema.SnsType, code: str, db: AsyncSessi
         case _:
             raise HTTPException(status_code=400, detail="Invalid provider")
 
-async def get_current_user(token:str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
-    
+async def get_current_user(token = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="access token의 정보가 잘못되었습니다.",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={   "WWW-Authenticate": "Bearer"},
     )
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        provider_type = payload.get("provider_type")
         user_id: str = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-        else:
-            user = await user_crud.get_user_by_userid(db, user_id=int(user_id))
-            if user is None:
+        if provider_type == user_schema.SnsType.google:
+            if user_id is None:
                 raise credentials_exception
-            return user
+            else:
+                user = await user_crud.get_user_by_sub(db, sub=int(user_id))
+                if user is None:
+                    raise credentials_exception
+                return user
+
+        else:
+            if user_id is None:
+                raise credentials_exception
+            else:
+                user = await user_crud.get_user_by_userid(db, user_id=int(user_id))
+                if user is None:
+                    raise credentials_exception
+                return user
 
     except JWTError:
         raise credentials_exception

@@ -4,7 +4,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 from fastapi import HTTPException
-from api.domain.user.user_schema import SocialMember, SnsType
+from api.domain.user.user_schema import SnsType
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -31,13 +31,13 @@ async def auth_google(code: str):
             token_data = response.json()
             id_info = id_token.verify_oauth2_token(token_data["id_token"], requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=10)
             
-            return SocialMember(
-                token=token_data["id_token"],
-                email=id_info["email"],
-                nickname=id_info["name"],
-                provider_id=id_info["sub"],
-                provider=SnsType.google,
-            )
+            data =  {    
+                "sub": id_info["sub"],   
+                "exp": id_info["exp"],
+                "provider_type": SnsType.google
+            }
+            
+            return data
         return None
     
     except Exception as e:

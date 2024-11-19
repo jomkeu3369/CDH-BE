@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
+from langchain_community.tools import DuckDuckGoSearchResults
 
 load_dotenv()
 
@@ -29,12 +32,29 @@ FORMAT:
 - summary:
 """
 
+wrapper = DuckDuckGoSearchAPIWrapper(region="kr-ko", time="w", safesearch="moderate", backend="api", max_results=1)
+search = DuckDuckGoSearchResults(api_wrapper=wrapper, source="text")
+
 prompt = PromptTemplate.from_template(template)
 
 model = ChatOpenAI(
     model="gpt-4o",
-    max_tokens=2048,
-    temperature=0.1,
+    max_tokens=4096,
+    temperature=0.7,
+)
+
+chain = (
+    {
+        "web_search": search,
+        "vector_docs": VectorStore_retriever | format_docs,
+        "erd_data": search,
+        "api_data": VectorStore_retriever | format_docs,
+        "note_data": note,
+    }
+    | RunnableLambda(lambda x: {"context": combine_sources(x), "question": x["question"]})
+    | prompt
+    | model
+    | output_parser
 )
 
 chain = prompt | model | output_parser
