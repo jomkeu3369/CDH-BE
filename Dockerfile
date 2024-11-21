@@ -9,9 +9,8 @@ RUN pip install "poetry==1.6.1"
 COPY pyproject.toml* poetry.lock* ./
 COPY api ./api
 COPY migrations ./migrations
-COPY chroma_db ./api/chroma_db
+COPY faiss_db ./faiss_db
 
-RUN pip install pysqlite3-binary
 RUN poetry config virtualenvs.in-project true
 RUN if [ -f pyproject.toml ]; then poetry install --no-root; fi
 

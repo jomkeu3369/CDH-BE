@@ -8,8 +8,6 @@ services:
       - "8000:8000"
     env_file:
       - .env
-    depends_on:
-      - chroma
 
   db:
     image: mysql:8.0
@@ -24,13 +22,5 @@ services:
     ports:
       - 3306:3306
 
-  chroma:
-    image: ghcr.io/chroma-core/chroma:latest
-    volumes:
-      - chroma_data:/chroma/chroma
-    ports:
-      - 8080:8000
-
 volumes:
   mysql_data:
-  chroma_data:

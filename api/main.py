@@ -5,6 +5,8 @@ from api.domain.user import user_router
 from api.domain.setting import setting_router
 from api.domain.note import note_router
 from api.domain.langchain import langchain_router
+from api.domain.erd import erd_router
+from api.domain.api import api_router
 from api.domain.langchain.langchain_models import model
 from api.domain.langchain.langchain_main_model import chain
 
@@ -38,8 +40,11 @@ app.include_router(user_router.router)
 app.include_router(setting_router.router)
 app.include_router(note_router.router)
 app.include_router(langchain_router.router)
+app.include_router(erd_router.router)
+app.include_router(api_router.router)
 
 
 # langserve
-add_routes(app, model, path="/stack/api/v1/openai", dependencies=[Depends(user_router.get_current_user)])
-add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])
+# add_routes(app, model, path="/stack/api/v1/openai", dependencies=[Depends(user_router.get_current_user)])
+# add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])
+add_routes(app, chain, path="/chain")

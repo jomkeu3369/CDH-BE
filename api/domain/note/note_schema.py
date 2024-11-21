@@ -29,11 +29,7 @@ class NoteCreate(BaseModel):
 class NoteUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
-    note_id: int
 
 class NoteList(BaseModel):
     total: int = 0
     note_list: list[Notes] = []
-
-class NoteDelete(BaseModel):
-    note_id: int
