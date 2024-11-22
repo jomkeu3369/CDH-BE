@@ -162,4 +162,4 @@ class SignUpLog(Base):
     sign_up_datetime = Column(DateTime, nullable=False, default=datetime.now, comment='회원 가입 일시')
     sign_up_useragent = Column(String(255), nullable=False, comment='회원 가입 시 useragent')
 
-    user_info = relationship("UserInfo", back_populates="signupLog")
+    user_info = relationship("UserInfo", back_populates="signupLog") 

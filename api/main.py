@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, File, UploadFile
 from starlette.middleware.cors import CORSMiddleware
 
 from api.domain.user import user_router
@@ -35,6 +35,15 @@ app.add_middleware(
 async def get_version():
     return {"version": os.getenv("version")}
 
+@app.post("/files/")
+async def create_file(file: bytes = File()):
+    return {"file_size": len(file)}
+
+@app.post("/uploadfile/")   
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
+
+
 # FastAPI
 app.include_router(user_router.router)
 app.include_router(setting_router.router)
@@ -47,4 +56,4 @@ app.include_router(api_router.router)
 # langserve
 # add_routes(app, model, path="/stack/api/v1/openai", dependencies=[Depends(user_router.get_current_user)])
 # add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])
-add_routes(app, chain, path="/chain")
+add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])   

@@ -25,10 +25,11 @@ from api.domain.note.note_crud import get_note
 from api.models import ORM
 from api.database import get_db
 import re
+import os
 
 load_dotenv()
 logging.langsmith("deploy_models")
-DB_PATH = "./faiss_db"
+DB_PATH = os.getenv("DB_path")
 
 # --------------------------------------
 #  모델 기본 설정
@@ -82,6 +83,7 @@ optimize_template = """
 
     query: {query}
 """
+
 # -----------------------------------
 #  검색기 설정
 # -----------------------------------
@@ -92,10 +94,11 @@ loaded_db = FAISS.load_local(
     embeddings=OpenAIEmbeddings(),
     allow_dangerous_deserialization=True,
 )
+print(loaded_db)
 
 VectorStore_retriever = loaded_db.as_retriever(
     search_type="similarity",
-    search_kwargs={"k":1}
+    search_kwargs={"k": 1}
 )
 
 def optimize_query(query):
@@ -116,7 +119,7 @@ async def get_datas(note_id, db: AsyncSession = Depends(get_db)):
     note_data:ORM.Notes = await get_note(db, note_id)
     return note_data.content
 
-wrapper = DuckDuckGoSearchAPIWrapper(region="kr-ko", time="w", safesearch="moderate", backend="api", max_results=1)
+wrapper = DuckDuckGoSearchAPIWrapper(region="wt-wt", time="y", safesearch="moderate", backend="api", max_results=10)
 search = DuckDuckGoSearchResults(api_wrapper=wrapper, source="text")
 
 # -----------------------------------
