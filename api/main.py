@@ -56,4 +56,4 @@ app.include_router(api_router.router)
 # langserve
 # add_routes(app, model, path="/stack/api/v1/openai", dependencies=[Depends(user_router.get_current_user)])
 # add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])
-add_routes(app, chain, path="/chain", dependencies=[Depends(user_router.get_current_user)])   
+add_routes(app, chain, path="/chain")   

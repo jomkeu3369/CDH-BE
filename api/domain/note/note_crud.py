@@ -21,9 +21,16 @@ async def search_notes(db: AsyncSession, user: UserInfo, skip: int = 0, limit: i
     
     return total, note_list.scalars().all()
 
-async def get_note(db: AsyncSession, note_id: int):
-    qeustion = await db.execute(select(Notes).filter(Notes.note_id == note_id))
-    return qeustion.scalar_one_or_none()
+async def get_note(db: AsyncSession, note_id: int) -> Notes:
+    qeustion = await db.scalars(
+        select(Notes)
+        .options(
+            selectinload(Notes.api),
+            selectinload(Notes.erd)
+        )
+        .where(Notes.note_id == note_id)
+    )
+    return qeustion.first()
 
 async def create_note(db: AsyncSession, note_create: note_schema.NoteCreate, user: UserInfo):
     db_note = Notes(title=note_create.title,

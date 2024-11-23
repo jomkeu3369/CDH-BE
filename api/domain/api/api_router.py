@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 # API 명세서 조회
-@router.get("/notes/{note_id}/{api_id}", response_model=api_schema.APIs)
+@router.get("/api/{note_id}/{api_id}", response_model=api_schema.APIs)
 async def get_note(note_id: int, api_id:int, db: AsyncSession = Depends(get_db),
                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
@@ -33,7 +33,7 @@ async def get_note(note_id: int, api_id:int, db: AsyncSession = Depends(get_db),
     return api
 
 # API 명세서 수정
-@router.put("/notes/{note_id}/{api_id}", response_model=api_schema.APIs)
+@router.put("/api/{note_id}/{api_id}", response_model=api_schema.APIs)
 async def api_update(note_id: int, api_id:int, _api_update: api_schema.APIUpdate, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
@@ -55,7 +55,7 @@ async def api_update(note_id: int, api_id:int, _api_update: api_schema.APIUpdate
     return update_api
 
 # API 명세서 삭제
-@router.delete("/notes/{note_id}/{api_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/api/{note_id}/{api_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def api_delete(note_id:int, api_id:int, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)

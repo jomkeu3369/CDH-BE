@@ -5,6 +5,11 @@ import datetime
 class NoteRequest(BaseModel):
     pass
 
+class NoteCreateSuccess(BaseModel):
+    note_id: int
+    api_id: int
+    erd_id: int
+    
 class Notes(BaseModel):
     note_id: int
     user_id: int

@@ -17,7 +17,7 @@ router = APIRouter(
 
 # 전체 노트 조회
 @router.get("/notes", response_model=note_schema.NoteList, tags=["notes"])
-async def note_list(db: note_schema = Depends(get_db), page: int = 0, size: int = 10, keyword: str = '',
+async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int = 10, keyword: str = '',
                     current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     total, _note_list = await note_crud.search_notes(db, user=current_user, skip=page * size, limit=size, keyword=keyword)
     return {
@@ -40,13 +40,19 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     return note
 
 # 노트 생성
-@router.post("/note", status_code=status.HTTP_204_NO_CONTENT, tags=["notes"])
+@router.post("/note", response_model=note_schema.NoteCreateSuccess, tags=["notes"])
 async def note_create(_note_create: note_schema.NoteCreate, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     note = await note_crud.create_note(db=db, note_create=_note_create, user=current_user)
-    await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id))
-    await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id))
+    erd = await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id))
+    api = await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id))
     
+    return note_schema.NoteCreateSuccess(
+        note_id=note.note_id,
+        api_id=api.api_id,
+        erd_id=erd.erd_id
+    )
+
 # 노트 업데이트
 @router.patch("/notes/{note_id}", status_code=status.HTTP_200_OK, tags=["notes"])
 async def note_update(note_id:int, _note_update: note_schema.NoteUpdate, db: AsyncSession = Depends(get_db),

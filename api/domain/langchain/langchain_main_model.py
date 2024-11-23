@@ -5,19 +5,14 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda, RunnableMap
 
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from langchain_community.tools import DuckDuckGoSearchResults
 
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-import faiss
-from langchain_community.vectorstores import FAISS
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_openai.embeddings import OpenAIEmbeddings
-from langchain_core.documents import Document
+from api.domain.langchain import langchain_DB
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
@@ -36,27 +31,6 @@ DB_PATH = os.getenv("DB_path")
 # --------------------------------------
 
 output_parser = StrOutputParser()
-
-template = """
-You're an analyst analyzing a project. 
-You're given notes data, ERD data, and API statement data, and you have to synthesize it to make an educated guess about how far along the project is and say why.
-
-notes data:
-{note_data}
-
-ERD data:
-{erd_data}
-
-API statement data:
-{api_data}
-
-FORMAT:
-- your answers must be in Korean.
-- project progress percentage:
-- reason:
-- proposals:
-- summary:
-"""
 
 temp_template = """
 You're an analyst analyzing a project. 
@@ -77,28 +51,51 @@ FORMAT:
 - summary:
 """
 
+
+template = """
+You're an analyst analyzing a project. 
+You're given notes data, ERD data, and API statement data, and you have to synthesize it to make an educated guess about how far along the project is and say why.
+You're Answer based on context.
+
+notes data:
+{note_data}
+
+ERD data:
+{erd_data}
+
+API statement data:
+{api_data}
+
+context:
+{context}
+
+FORMAT:
+- your answers must be in Korean.
+- project progress percentage:
+- reason:
+- proposals:
+- summary:
+"""
+
 optimize_template = """
     Convert the following query into a search-optimized form. Extract the keywords and add search operators if necessary.
     Just output the keywords without any additional words.
 
-    query: {query}
+    query: {note_data}
 """
 
 # -----------------------------------
 #  검색기 설정
 # -----------------------------------
 
-loaded_db = FAISS.load_local(
-    folder_path=DB_PATH,
-    index_name="faiss_index",
-    embeddings=OpenAIEmbeddings(),
-    allow_dangerous_deserialization=True,
-)
-print(loaded_db)
+loaded_db = langchain_DB.db
 
 VectorStore_retriever = loaded_db.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 1}
+    search_kwargs={
+            "k": 4,
+            "filter": {"user_id": "12345", "note_id": "note1"}
+        },
 )
 
 def optimize_query(query):
@@ -126,7 +123,7 @@ search = DuckDuckGoSearchResults(api_wrapper=wrapper, source="text")
 #  체인 설정
 # -----------------------------------
 
-prompt = PromptTemplate.from_template(temp_template)
+prompt = PromptTemplate.from_template(template)
 optimize_prompt = PromptTemplate.from_template(optimize_template)
 
 model = ChatOpenAI(
@@ -137,16 +134,20 @@ model = ChatOpenAI(
 
 optimize_chain = optimize_prompt | model | output_parser
 
+
 chain = (
     {
         "original_query": RunnablePassthrough(),
-        "summarized_query" : optimize_chain 
+        "summarized_query": optimize_chain,
+        "api_data": RunnablePassthrough(),
+        "erd_data": RunnablePassthrough(),
     } 
-    | RunnableLambda(lambda x: {"context": combine_sources(x), "note_data": x["original_query"]})
+    | RunnableLambda(lambda x: {"context": combine_sources(x), "note_data": x["original_query"], "api_data": x["api_data"], "erd_data": x["erd_data"]})
     | prompt
     | model
     | output_parser
 )
+
 
 # -----------------------------------
 #  추가할 사항

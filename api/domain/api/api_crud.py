@@ -6,19 +6,23 @@ from sqlalchemy.orm import selectinload
 from api.models.ORM import Notes, UserInfo, API
 from api.domain.api import api_schema
 
-async def get_api(db: AsyncSession, note_id: int, api_id: int):
-    qeustion = await db.execute(select(API).filter(
-        (API.note_id == note_id) | 
-        (API.api_id == api_id)
+async def get_api(db: AsyncSession, note_id: int, api_id: int) -> API:
+    query = await db.execute(
+        select(API)
+        .options(selectinload(API.notes))
+        .filter(
+            (API.note_id == note_id) & 
+            (API.api_id == api_id)
         )
     )
-    return qeustion.scalar_one_or_none()
+    return query.scalar_one_or_none()
 
 async def create_api(db: AsyncSession, api_create: api_schema.APICreate):
     db_api = API(note_id=api_create.note_id)
     db.add(db_api)
     await db.commit()
     await db.refresh(db_api)
+    return db_api
 
 async def update_api(db: AsyncSession, db_api: API, api_update: api_schema.APIUpdate):
     db_api.title = api_update.title
