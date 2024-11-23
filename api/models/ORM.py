@@ -158,3 +158,4 @@ class SignUpLog(Base):
     sign_up_useragent = Column(String(255), nullable=False, comment='회원 가입 시 useragent')
 
     user_info = relationship("UserInfo", back_populates="signupLog") 
+
