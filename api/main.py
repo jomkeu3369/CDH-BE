@@ -7,7 +7,6 @@ from api.domain.note import note_router
 from api.domain.langchain import langchain_router
 from api.domain.erd import erd_router
 from api.domain.api import api_router
-from api.domain.langchain.langchain_models import model
 from api.domain.langchain.langchain_main_model import chain
 
 from langserve import add_routes

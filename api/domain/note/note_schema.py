@@ -6,6 +6,7 @@ class NoteRequest(BaseModel):
     pass
 
 class NoteCreateSuccess(BaseModel):
+    user_id: int
     note_id: int
     api_id: int
     erd_id: int

@@ -14,6 +14,7 @@ class APIs(BaseModel):
         
 class APICreate(BaseModel):
     note_id: int
+    user_id: int
 
 class APIUpdate(BaseModel):
     title: str

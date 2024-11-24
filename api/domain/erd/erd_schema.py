@@ -16,6 +16,7 @@ class ERDs(BaseModel):
         
 class ERDCreate(BaseModel):
     note_id: int
+    user_id: int
 
 class ERDUpdate(BaseModel):
     title: str

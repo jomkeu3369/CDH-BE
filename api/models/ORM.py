@@ -22,14 +22,15 @@ class UserInfo(Base):
     created_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
     updated_at = Column(DateTime, nullable=True)
     
+    api = relationship("API", back_populates="user_info")
+    erd = relationship("ERD", back_populates="user_info")
     settings = relationship("Settings", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     notes = relationship("Notes", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     calendars = relationship("Calendars", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     agreements = relationship("Agreement", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     loginLog = relationship("LoginLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
-
-
+    
 class Settings(Base):
     __tablename__ = 'settings'
 
@@ -40,8 +41,7 @@ class Settings(Base):
     updated_at = Column(DateTime, nullable=True)
 
     user_info = relationship("UserInfo", back_populates="settings")
-
-
+    
 class Notes(Base):
     __tablename__ = 'notes'
 
@@ -73,12 +73,14 @@ class ERD(Base):
 
     erd_id = Column(Integer, primary_key=True, autoincrement=True)
     note_id = Column(Integer, ForeignKey('notes.note_id'), unique=True, nullable=False, comment='노트 고유 아이디')
+    user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     title = Column(String(100), nullable=True)
     content = Column(Text, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
     updated_at = Column(DateTime, nullable=True)
 
-    notes = relationship("Notes", back_populates="erd")
+    user_info = relationship("UserInfo", back_populates="erd")
+    notes = relationship("Notes", back_populates="erd", lazy="selectin")
 
 class AI(Base):
     __tablename__ = 'AI'
@@ -86,7 +88,7 @@ class AI(Base):
     goal_id = Column(Integer, primary_key=True, autoincrement=True)
     note_id = Column(Integer, ForeignKey('notes.note_id'), unique=True, nullable=False, comment='노트 고유 아이디')
     content = Column(Text, nullable=False, comment='분석 결과')
-
+    
     notes = relationship("Notes", back_populates="ai")
 
 class API(Base):
@@ -94,12 +96,14 @@ class API(Base):
 
     api_id = Column(Integer, primary_key=True, autoincrement=True)
     note_id = Column(Integer, ForeignKey('notes.note_id'), unique=True, nullable=False, comment='노트 고유 아이디')
+    user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     title = Column(String(100), nullable=True)
     content = Column(Text, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
     updated_at = Column(DateTime, nullable=True)
 
-    notes = relationship("Notes", back_populates="api")
+    user_info = relationship("UserInfo", back_populates="api")
+    notes = relationship("Notes", back_populates="api", lazy="selectin")
 
 class AdminInfo(Base):
     __tablename__ = 'admin_info'

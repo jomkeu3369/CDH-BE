@@ -44,10 +44,11 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
 async def note_create(_note_create: note_schema.NoteCreate, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     note = await note_crud.create_note(db=db, note_create=_note_create, user=current_user)
-    erd = await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id))
-    api = await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id))
+    erd = await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id, user_id=current_user.user_id))
+    api = await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id, user_id=current_user.user_id))
     
     return note_schema.NoteCreateSuccess(
+        user_id=current_user.user_id,
         note_id=note.note_id,
         api_id=api.api_id,
         erd_id=erd.erd_id

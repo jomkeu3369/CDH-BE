@@ -18,7 +18,7 @@ async def get_erd(db: AsyncSession, note_id: int, erd_id: int) -> ERD:
     return query.scalar_one_or_none()
 
 async def create_erd(db: AsyncSession, erd_create: erd_schema.ERDCreate):
-    db_erd = ERD(note_id=erd_create.note_id)
+    db_erd = ERD(note_id=erd_create.note_id, user_id=erd_create.user_id)
     db.add(db_erd)
     await db.commit()
     await db.refresh(db_erd)
