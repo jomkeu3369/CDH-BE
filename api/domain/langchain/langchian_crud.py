@@ -14,15 +14,9 @@ from api.models.ORM import UserInfo
 load_dotenv()
 
 async def save_file(file: IO, extension: str):
-    # file_content = file.read()
-
     with NamedTemporaryFile("wb", delete=False, suffix=f".{extension}") as tempfile:
         tempfile.write(file.read())
         return tempfile.name
-
-    # with NamedTemporaryFile("w", delete=False, encoding="utf-8", suffix=f".{extension}") as tempfile:
-    #     tempfile.write(file_content)
-    #     return tempfile.name
 
 async def process_file(file_path: str):
     if file_path.endswith(".pdf"):

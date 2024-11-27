@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from api.domain.langchain.langchain_main_model import chain
+from api.domain.langchain.langchain_model import graph
 from api.domain.user import user_router
 from api.models import ORM
 from api.domain.note import note_crud
@@ -33,8 +33,22 @@ async def invoke_langchain(note_id: int, db:AsyncSession = Depends(get_db),
 
     api_data = await api_crud.get_api(db=db, note_id=note_id, api_id=note_data.api.api_id)
     erd_data = await erd_crud.get_erd(db=db, note_id=note_id, erd_id=note_data.erd.erd_id)
-    result = await chain.ainvoke(input={"note_data":note_data.content, "api_data":api_data.content, "erd_data":erd_data.content})
-    return result
+    result = await graph.ainvoke(input={
+        "counter": 0,
+        "note_id": note_data.note_id,
+        "user_id": current_user.user_id,
+        "original_query": note_data.content,
+        "optimize_query": None,
+        "generation": None,
+        "api_query": api_data.content,
+        "erd_query": erd_data.content,
+        "self_rag": False,
+        "self_rag_counter": 0,
+        "vector_store_context": [],
+        "web_search_context": []
+    })
+    
+    return result.get("generation", None)
 
 async def is_allowed_file(filename: str) -> bool:
     _, ext = os.path.splitext(filename)
