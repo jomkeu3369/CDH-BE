@@ -19,7 +19,6 @@ from api.domain.langchain.langchain_schema import MainState
 async def vectorDB_retriever(state: MainState):
     ''' LLM에게 전달할 사전 정보를 FAISS Vector Store에서 검색합니다. '''
 
-    print("----- VECTORDB RETRIEVE -----")
     query = state["optimize_query"]
     user_id = state["user_id"]
     note_id = state["note_id"]
@@ -38,7 +37,6 @@ async def vectorDB_retriever(state: MainState):
 async def web_retriever(state: MainState):
     ''' 웹 검색 후 관련 정보를 가져옵니다. '''
 
-    print("-----  WEB SEARCH ----- ")
     question = state["optimize_query"]
     documents = state["web_search_context"]
 
@@ -59,7 +57,6 @@ async def web_retriever(state: MainState):
 async def rewrite_query_without_counter(state: MainState):
     ''' original_query를 검색을 수월하게 할 수 있도록 최적화 합니다. '''
 
-    print("----- REWRITE WITHOUT COUNTER -----")
     query = state["original_query"]
 
     template = """
@@ -85,8 +82,6 @@ async def rewrite_query_with_counter(state: MainState):
     '''
         original_query를 바탕으로 optimize_query를 재작성 합니다. (카운터 증가)
     '''
-
-    print("----- REWRITE WITH COUNTER -----")
     query = state["original_query"]
     counter = state["counter"]
 
@@ -117,7 +112,6 @@ async def grade_vectorDB_documents(state: MainState) -> Dict[str, Any]:
     '''
         가져온 문서가 사용자 쿼리와 일치한지 유사도를 검사합니다.
     '''
-    print("----- GRADDE VECTORDB -----")
     query = state["original_query"]
     documents = state["vector_store_context"]
     
@@ -147,7 +141,6 @@ async def grade_vectorDB_documents(state: MainState) -> Dict[str, Any]:
     return {"vector_store_context": filtered_docs, "original_query": query}
 
 async def grade_web_documents(state: MainState) -> Dict[str, Any]:
-    print("----- GRADDE WEB -----")
     query = state["original_query"]
     documents = state["web_search_context"]
     
@@ -177,7 +170,6 @@ async def grade_web_documents(state: MainState) -> Dict[str, Any]:
     return {"web_search_context": filtered_docs, "original_query": query}
 
 async def grade_generation(state: MainState):
-    print("----- GRADDE GENERATION -----")
     query = state["original_query"]
     generation = state["generation"]
     
@@ -205,7 +197,6 @@ async def grade_generation(state: MainState):
 # ----------------------------
 
 async def generation(state: MainState):
-    print("----- GENERATION -----")
     note_data = state["original_query"]
     erd_data = state["erd_query"]
     api_data = state["api_query"]

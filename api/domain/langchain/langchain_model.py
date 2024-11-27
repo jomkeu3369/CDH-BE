@@ -15,33 +15,21 @@ logging.langsmith("deploy_models")
 DB_PATH = os.getenv("DB_path")
 
 def decide_to_vectorDB(state: MainState):
-    print("----- ASSESS GRADED VECTORDB -----")
-
     if len(state["vector_store_context"]) > 0:
-        print("----- DECISION: STOP SERACH -----")
         return "STOP"
     else:
-        print("----- DECISION: START WEB SEARCH -----")
         return "SEARCH"
 
 def decide_to_websearch(state: MainState):
-    print("----- ASSESS GRADED WEB -----")
-
     if state["counter"] >= 6 or len(state["web_search_context"]) > 0:
-        print("----- DECISION: STOP WEB SERACH -----")
         return "STOP"
     else:
-        print("----- DECISION: REGARDING WEB SEARCH -----")
         return "RESEARCH" 
     
 def decide_to_generate(state: MainState):
-    print("----- ASSESS GRADED GENERATE -----")
-
     if state["self_rag_counter"] > 1 or state["self_rag"]:
-        print("----- DECISION: HALT -----")
         return "HALT"
     else:
-        print("----- DECISION: RETRY -----")
         return "RETRY" 
 
 # 그래프 엣지 추가
