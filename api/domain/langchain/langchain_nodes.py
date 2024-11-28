@@ -42,12 +42,14 @@ async def web_retriever(state: MainState):
 
     wrapper = DuckDuckGoSearchAPIWrapper(region="kr-ko", time="y", safesearch="moderate", backend="api", max_results=4)
     search = DuckDuckGoSearchResults(api_wrapper=wrapper, output_format="list")
-
-    docs = await search.ainvoke({"query": question})
-    web_results = "\n".join([d["snippet"] for d in docs])
-    web_results = Document(page_content=web_results)
-    documents.append(web_results)
-
+    try:
+        docs = await search.ainvoke({"query": question})
+        web_results = "\n".join([d["snippet"] for d in docs])
+        web_results = Document(page_content=web_results)
+        documents.append(web_results)
+    except:
+        pass
+    
     return {"web_search_context": documents}
 
 # ----------------------------
