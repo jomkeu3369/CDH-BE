@@ -33,14 +33,6 @@ app.add_middleware(
 async def get_version():
     return {"version": os.getenv("version")}
 
-@app.post("/files/")
-async def create_file(file: bytes = File()):
-    return {"file_size": len(file)}
-
-@app.post("/uploadfile/")   
-async def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}
-
 
 # FastAPI
 app.include_router(user_router.router)

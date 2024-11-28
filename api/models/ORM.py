@@ -58,13 +58,12 @@ class Notes(Base):
     ai = relationship("AI", back_populates="notes", uselist=False, cascade="all, delete, delete-orphan", lazy="selectin")
 
 class Calendars(Base):
-    __tablename__ = 'calenders'
+    __tablename__ = 'calendars'
 
-    calender_id = Column(Integer, primary_key=True, autoincrement=True, comment='자동생성')
+    calendar_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     content = Column(Text, nullable=True)
-    create_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
-    update_at = Column(DateTime, nullable=True)
+    time = Column(DateTime, nullable=True)
 
     user_info = relationship("UserInfo", back_populates="calendars")
 
