@@ -27,8 +27,8 @@ class UserInfo(Base):
     agreements = relationship("Agreement", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     loginLog = relationship("LoginLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
-    group = relationship("Group", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
-    member = relationship("Member", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
+    # group = relationship("Group", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
+    # member = relationship("Member", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     
 class Settings(Base):
     __tablename__ = 'settings'
@@ -161,24 +161,24 @@ class SignUpLog(Base):
 
     user_info = relationship("UserInfo", back_populates="signupLog") 
 
-class Group(Base):
-    __tablename__ = "group"
+# class Group(Base):
+#     __tablename__ = "group"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
-    user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    members = Column(JSON, nullable=True)
-    invite_id = Column(Integer, nullable=False, unique=True, index=True)
+#     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
+#     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
+#     members = Column(JSON, nullable=True)
+#     invite_id = Column(Integer, nullable=False, unique=True, index=True)
     
-    user_info = relationship("UserInfo", back_populates="group")
-    member = relationship("Member", back_populates="group")
+#     user_info = relationship("UserInfo", back_populates="group")
+#     member = relationship("Member", back_populates="group")
 
-class Member(Base):
-    __tablename__ = "member"
+# class Member(Base):
+#     __tablename__ = "member"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
-    invite_id = Column(Integer, ForeignKey('group.invite_id', ondelete="CASCADE"), nullable=False)
-    user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    joined_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
+#     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
+#     invite_id = Column(Integer, ForeignKey('group.invite_id', ondelete="CASCADE"), nullable=False)
+#     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
+#     joined_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
 
-    user_info = relationship("UserInfo", back_populates="member")
-    group = relationship("Group", back_populates="member")
+#     user_info = relationship("UserInfo", back_populates="member")
+#     group = relationship("Group", back_populates="member")
