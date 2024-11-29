@@ -7,6 +7,7 @@ from api.domain.note import note_router
 from api.domain.langchain import langchain_router
 from api.domain.erd import erd_router
 from api.domain.api import api_router
+from api.domain.calendar import calendar_router
 from api.domain.langchain.langchain_model import graph
 from langserve import add_routes
 import os
@@ -41,6 +42,7 @@ app.include_router(note_router.router)
 app.include_router(langchain_router.router)
 app.include_router(erd_router.router)
 app.include_router(api_router.router)
+app.include_router(calendar_router.router)
 
 
 # langserve

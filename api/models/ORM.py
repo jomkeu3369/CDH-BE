@@ -9,11 +9,8 @@ from datetime import datetime
 class UserInfo(Base):
     __tablename__ = 'user_info'
 
-    '''
-        [2024-10-24 PM 20:12:11] user_id 항목을 pk로 변경하고 user_id 항목을 만들어서 UUID로 변경 검토
-    '''
     user_id = Column(Integer, primary_key=True, autoincrement=True, comment='사용자 고유 아이디') 
-    nickname = Column(String(20), nullable=False, unique=True, index=True)
+    nickname = Column(String(20), nullable=False)
     pwd = Column(String(60), nullable=True, comment='암호화')
     email = Column(String(320), nullable=True)
     provider_id = Column(String(30), nullable=True, comment="Oauth 제공자가 local이 아닌 경우에만 작성")
@@ -31,8 +28,8 @@ class UserInfo(Base):
     loginLog = relationship("LoginLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     group = relationship("Group", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
-    member = relationship("Member", back_populates="user_info")
-
+    member = relationship("Member", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
+    
 class Settings(Base):
     __tablename__ = 'settings'
 
@@ -181,7 +178,6 @@ class Member(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
     invite_id = Column(Integer, ForeignKey('group.invite_id', ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    nickname = Column(String(20), ForeignKey('user_info.nickname'), nullable=False)
     joined_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
 
     user_info = relationship("UserInfo", back_populates="member")

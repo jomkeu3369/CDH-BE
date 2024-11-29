@@ -29,30 +29,13 @@ async def get_existing_user(db: AsyncSession, user_create: UserCreate):
     return result.scalars().all()
 
 async def create_social_user(db: AsyncSession, user_create: SocialMember):
-    nickname = user_create.nickname
-
-    db_user = await db.execute(select(UserInfo).filter(UserInfo.nickname == nickname))
-    db_user = db_user.scalars().first()
-
-    if db_user:
-        base_nickname = nickname
-        count = 1
-        while db_user:
-            nickname = f"{base_nickname}_{count}"
-            db_user = await db.execute(select(UserInfo).filter(UserInfo.nickname == nickname))
-            db_user = db_user.scalars().first()
-            count += 1
-
-    db_user = UserInfo(
-        nickname=nickname,
-        email=user_create.email,
-        provider_type=user_create.provider.name,
-        provider_id=int(user_create.provider_id)
-    )
+    db_user = UserInfo(nickname=user_create.nickname,
+                   email=user_create.email,
+                   provider_type=user_create.provider.name,
+                   provider_id=int(user_create.provider_id))
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
-
 
 async def get_user(db: AsyncSession, username: str) -> UserInfo:
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.nickname == username))
