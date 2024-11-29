@@ -27,7 +27,7 @@ class UserInfo(Base):
     agreements = relationship("Agreement", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     loginLog = relationship("LoginLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     signupLog = relationship("SignUpLog", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
-    # group = relationship("Group", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
+    ## group = relationship("Group", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     # member = relationship("Member", back_populates="user_info", cascade="all, delete, delete-orphan", lazy="selectin")
     
 class Settings(Base):
