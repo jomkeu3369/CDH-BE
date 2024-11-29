@@ -17,7 +17,7 @@ router = APIRouter(
 
 # 캘린더 전체 조회 (month)
 @router.get("/calendar", response_model=calendar_schema.calendarList)
-async def calendar_list(_calendar_get: calendar_schema.calendarGet, db: AsyncSession = Depends(get_db),
+async def calendar_list(_calendar_get: calendar_schema.calendarGet = Depends(), db: AsyncSession = Depends(get_db),
                     current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     
     total, _calendar_list = await calendar_crud.search_calendar(db, user=current_user, year=_calendar_get.year, month=_calendar_get.month)
@@ -28,7 +28,7 @@ async def calendar_list(_calendar_get: calendar_schema.calendarGet, db: AsyncSes
 
 # 캘린더 수정
 @router.put("/calendar", status_code=status.HTTP_200_OK)
-async def calendar_update(_calendar_update: calendar_schema.calendar, db: AsyncSession = Depends(get_db),
+async def calendar_update(_calendar_update: calendar_schema.calendarUpdate, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     calendar = await calendar_crud.get_calendar(db, calendar_id=_calendar_update.calendar_id)
     if not calendar:

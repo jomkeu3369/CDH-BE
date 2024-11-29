@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, Integer, String, Text, DateTime, Boolean, ForeignKey, TIMESTAMP, JSON
+from sqlalchemy import create_engine, Column, Integer, Integer, String, Text, DateTime, Boolean, ForeignKey, TIMESTAMP, JSON, DATE
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -62,7 +62,7 @@ class Calendars(Base):
     calendar_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     content = Column(Text, nullable=True)
-    time = Column(DateTime, nullable=True)
+    time = Column(DATE, nullable=True)
 
     user_info = relationship("UserInfo", back_populates="calendars")
 
@@ -166,7 +166,7 @@ class Group(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    members = Column(Integer, nullable=True)
+    members = Column(JSON, nullable=True)
     invite_id = Column(Integer, nullable=False, unique=True, index=True)
     
     user_info = relationship("UserInfo", back_populates="group")

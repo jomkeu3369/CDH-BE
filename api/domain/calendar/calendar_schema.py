@@ -4,7 +4,7 @@ import datetime
 class calendar(BaseModel):
     calendar_id: int
     content: str
-    time: datetime.datetime
+    time: datetime.date
     
 class calendarGet(BaseModel):
     year: int
@@ -12,7 +12,11 @@ class calendarGet(BaseModel):
 
 class calendarCreate(BaseModel):
     content: str
-    time: datetime.datetime
+    time: datetime.date
+
+class calendarUpdate(BaseModel):
+    calendar_id: int
+    content: str
 
 class calendarList(BaseModel):
     total: int = 0
