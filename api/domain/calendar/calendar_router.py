@@ -41,3 +41,10 @@ async def calendar_update(_calendar_update: calendar_schema.calendar, db: AsyncS
     await calendar_crud.update_calendar(db=db, db_calendar=calendar, calendar_update=_calendar_update)
     update_calendar = await calendar_crud.get_calendar(db, calendar_id=_calendar_update.calendar_id)
     return update_calendar
+
+# 캘린더 생성
+@router.post("/calendar", response_model=calendar_schema.calendar)
+async def calendar_create(_calendar_create: calendar_schema.calendarCreate, db: AsyncSession = Depends(get_db),
+                          current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
+    calendar = await calendar_crud.create_calendar(db=db, calendar_create=_calendar_create, user=current_user)
+    return calendar

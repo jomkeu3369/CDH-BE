@@ -30,3 +30,13 @@ async def update_calendar(db: AsyncSession, db_calendar: Calendars, calendar_upd
     db.add(db_calendar)
     await db.commit()
     await db.refresh(db_calendar)
+
+async def create_calendar(db: AsyncSession, calendar_create: calendar_schema.calendarCreate, user: UserInfo):
+    db_calendar = Calendars(content=calendar_create.content,
+                        user_id=user.user_id,
+                        tile=calendar_create.time)
+    db.add(db_calendar)
+    await db.commit()
+    await db.refresh(db_calendar)
+    return db_calendar
+
