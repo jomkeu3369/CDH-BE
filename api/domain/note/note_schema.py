@@ -22,6 +22,16 @@ class Notes(BaseModel):
     class Config:
         orm_mode = True
 
+class NoteResponse(BaseModel):
+    note_id: int
+    api_id: int
+    erd_id: int
+    user_id: int
+    title: str
+    content: str
+    created_at: datetime.datetime
+    updated_at: datetime.datetime | None = None
+
 class NoteCreate(BaseModel):
     title: str
     content: str

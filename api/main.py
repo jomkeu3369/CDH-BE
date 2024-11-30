@@ -8,6 +8,7 @@ from api.domain.langchain import langchain_router
 from api.domain.erd import erd_router
 from api.domain.api import api_router
 from api.domain.calendar import calendar_router
+from api.domain.teamspace import teamspace_router
 from api.domain.langchain.langchain_model import graph
 from langserve import add_routes
 import os
@@ -19,7 +20,8 @@ app = FastAPI(
 )
 
 origins = [
-    "*"
+    "http://localhost:3000",
+    "https://j3pbl.kro.kr"
 ]
 
 app.add_middleware(
@@ -43,7 +45,7 @@ app.include_router(langchain_router.router)
 app.include_router(erd_router.router)
 app.include_router(api_router.router)
 app.include_router(calendar_router.router)
-
+app.include_router(teamspace_router.router)
 
 # langserve
 # add_routes(app, model, path="/stack/api/v1/openai", dependencies=[Depends(user_router.get_current_user)])

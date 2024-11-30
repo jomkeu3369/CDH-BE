@@ -1,4 +1,3 @@
-
 from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.engine import Result

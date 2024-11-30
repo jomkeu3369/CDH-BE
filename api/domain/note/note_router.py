@@ -26,7 +26,7 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
     }
 
 # 노트 조회
-@router.get("/notes/{note_id}", response_model=note_schema.Notes, tags=["notes"])
+@router.get("/notes/{note_id}", response_model=note_schema.NoteResponse, tags=["notes"])
 async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     note = await note_crud.get_note(db, note_id=note_id)
@@ -37,7 +37,19 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     if note.user_id != current_user.user_id:
          raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="권한이 없습니다.")
-    return note
+    
+    erd = await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id, user_id=current_user.user_id))
+    api = await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id, user_id=current_user.user_id))
+    
+    return note_schema.NoteResponse(
+        note_id=note.note_id,
+        api_id=api.api_id,
+        erd_id=erd.erd_id,
+        user_id=note.user_id,
+        content=note.content,
+        created_at=note.created_at,
+        updated_at=note.updated_at
+    )
 
 # 노트 생성
 @router.post("/note", response_model=note_schema.NoteCreateSuccess, tags=["notes"])

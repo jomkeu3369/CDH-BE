@@ -33,7 +33,7 @@ async def get_note(note_id: int, erd_id:int, db: AsyncSession = Depends(get_db),
     return erd
 
 # ERD 수정
-@router.put("/erd/{note_id}/{erd_id}", response_model=erd_schema.ERDs, tags=["erds"])
+@router.put("/erdupload/{note_id}/{erd_id}", response_model=erd_schema.ERDs, tags=["erds"])
 async def erd_update(note_id: int, erd_id:int, _erd_update: erd_schema.ERDUpdate, db: AsyncSession = Depends(get_db),
                           current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     db_erd = await erd_crud.get_erd(db, note_id=note_id, erd_id=erd_id)
