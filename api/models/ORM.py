@@ -46,7 +46,7 @@ class Notes(Base):
 
     note_id = Column(Integer, primary_key=True, autoincrement=True, comment='노트 고유 아이디')
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    teamspace_id = Column(Integer, nullable=False)
+    teamspace_id = Column(Integer, nullable=True)
     title = Column(String(100), nullable=False)
     content = Column(Text, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
@@ -168,7 +168,7 @@ class Group(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     members = Column(JSON, nullable=True)
-    invite_id = Column(Integer, nullable=False, unique=True, index=True)
+    invite_id = Column(String(40), nullable=False, unique=True, index=True)
     
     user_info = relationship("UserInfo", back_populates="user_group")
     member = relationship("Member", back_populates="user_group", uselist=False)
@@ -177,7 +177,7 @@ class Member(Base):
     __tablename__ = "member"
 
     id = Column(Integer, primary_key=True, autoincrement=True, comment='PK')
-    invite_id = Column(Integer, ForeignKey('user_group.invite_id'), nullable=False)
+    invite_id = Column(String(40), ForeignKey('user_group.invite_id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
     joined_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
 

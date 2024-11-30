@@ -15,7 +15,7 @@ router = APIRouter(
 
 # ERD 조회
 @router.get("/erd/{note_id}/{erd_id}", response_model=erd_schema.ERDs, tags=["erds"])
-async def get_note(note_id: int, erd_id:int, db: AsyncSession = Depends(get_db),
+async def get_erd(note_id: int, erd_id:int, db: AsyncSession = Depends(get_db),
                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     erd = await erd_crud.get_erd(db, note_id=note_id, erd_id=erd_id)
     if not erd:

@@ -32,6 +32,13 @@ async def get_note(db: AsyncSession, note_id: int) -> Notes:
     )
     return qeustion.first()
 
+async def get_note_with_teamspaceID(db: AsyncSession, teamspace_id: int) -> Notes:
+    qeustion = await db.scalars(
+        select(Notes)
+        .where(Notes.teamspace_id == teamspace_id)
+    )
+    return qeustion.first()
+
 async def create_note(db: AsyncSession, note_create: note_schema.NoteCreate, user: UserInfo):
     db_note = Notes(title=note_create.title,
                            content=note_create.content,
