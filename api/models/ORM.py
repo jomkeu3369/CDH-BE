@@ -170,8 +170,8 @@ class Group(Base):
     members = Column(JSON, nullable=True)
     invite_id = Column(Integer, nullable=False, unique=True, index=True)
     
-    user_info = relationship("UserInfo", back_populates="group")
-    member = relationship("Member", back_populates="group", uselist=False)
+    user_info = relationship("UserInfo", back_populates="user_group")
+    member = relationship("Member", back_populates="user_group", uselist=False)
 
 class Member(Base):
     __tablename__ = "member"
