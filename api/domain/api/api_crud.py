@@ -6,6 +6,12 @@ from sqlalchemy.orm import selectinload
 from api.models.ORM import Notes, UserInfo, API
 from api.domain.api import api_schema
 
+async def get_api_by_note_id(db: AsyncSession, note_id: int):
+    query =  await db.execute(
+        select(API).where(API.note_id == note_id)
+    )
+    return query.scalars().first()
+
 async def get_api(db: AsyncSession, note_id: int, api_id: int) -> API:
     query = await db.execute(
         select(API)

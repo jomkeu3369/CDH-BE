@@ -24,8 +24,6 @@ class Notes(BaseModel):
 
 class NoteResponse(BaseModel):
     note_id: int
-    api_id: int
-    erd_id: int
     user_id: int
     title: str
     content: str
@@ -46,6 +44,16 @@ class NoteUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
 
+class NoteListResponse(BaseModel):
+    note_id: int
+    user_id: int
+    content: str
+    title: str
+    created_at: str
+    updated_at: str
+    erd_id: Optional[int] = None
+    api_id: Optional[int] = None
+
 class NoteList(BaseModel):
     total: int = 0
-    note_list: list[Notes] = []
+    note_list: list[NoteResponse] = []

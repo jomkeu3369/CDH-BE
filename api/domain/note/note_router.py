@@ -18,11 +18,27 @@ router = APIRouter(
 # 전체 노트 조회
 @router.get("/notes", response_model=note_schema.NoteList, tags=["notes"])
 async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int = 10, keyword: str = '',
-                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
+                    current_user: ORM.UserInfo = Depends(user_router.get_current_user)):
     total, _note_list = await note_crud.search_notes(db, user=current_user, skip=page * size, limit=size, keyword=keyword)
+
+    note_list_with_ids = []
+    for note in _note_list:
+        erd = await erd_crud.get_erd_by_note_id(db, note_id=note.note_id)
+        api = await api_crud.get_api_by_note_id(db, note_id=note.note_id)
+        note_list_with_ids.append({
+            "note_id": note.note_id,
+            "user_id": note.user_id,
+            "content": note.content,
+            "title": note.title,
+            "created_at": note.created_at,
+            "updated_at": note.updated_at,
+            "erd_id": erd.erd_id if erd else None,
+            "api_id": api.api_id if api else None
+        })
+
     return {
-        'total': total,
-        'note_list': _note_list
+        "total": total,
+        "note_list": note_list_with_ids
     }
 
 # 노트 조회
@@ -37,14 +53,9 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     if note.user_id != current_user.user_id:
          raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="권한이 없습니다.")
-    
-    erd = await erd_crud.create_erd(db=db, erd_create=erd_schema.ERDCreate(note_id=note.note_id, user_id=current_user.user_id))
-    api = await api_crud.create_api(db=db, api_create=api_schema.APICreate(note_id=note.note_id, user_id=current_user.user_id))
-    
+                            
     return note_schema.NoteResponse(
         note_id=note.note_id,
-        api_id=api.api_id,
-        erd_id=erd.erd_id,
         user_id=note.user_id,
         content=note.content,
         created_at=note.created_at,

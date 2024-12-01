@@ -6,6 +6,13 @@ from sqlalchemy.orm import selectinload
 from api.models.ORM import Notes, UserInfo, ERD
 from api.domain.erd import erd_schema
 
+async def get_erd_by_note_id(db: AsyncSession, note_id: int):
+    query = await db.execute(
+        select(ERD).where(ERD.note_id == note_id)
+    )
+    
+    return query.scalars().first()
+
 async def get_erd(db: AsyncSession, note_id: int, erd_id: int) -> ERD:
     query = await db.execute(
         select(ERD)
