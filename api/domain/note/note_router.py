@@ -57,6 +57,7 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     return note_schema.NoteResponse(
         note_id=note.note_id,
         user_id=note.user_id,
+        title=note.title,
         content=note.content,
         created_at=note.created_at,
         updated_at=note.updated_at

@@ -49,11 +49,11 @@ class NoteListResponse(BaseModel):
     user_id: int
     content: str
     title: str
-    created_at: str
-    updated_at: str
+    created_at: datetime.datetime
+    updated_at: datetime.datetime | None = None
     erd_id: Optional[int] = None
     api_id: Optional[int] = None
 
 class NoteList(BaseModel):
     total: int = 0
-    note_list: list[NoteResponse] = []
+    note_list: list[NoteListResponse] = []

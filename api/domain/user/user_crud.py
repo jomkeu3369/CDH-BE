@@ -28,13 +28,33 @@ async def get_existing_user(db: AsyncSession, user_create: UserCreate):
     return result.scalars().all()
 
 async def create_social_user(db: AsyncSession, user_create: SocialMember):
-    db_user = UserInfo(nickname=user_create.nickname,
-                   email=user_create.email,
-                   provider_type=user_create.provider.name,
-                   provider_id=int(user_create.provider_id))
+    base_nickname = user_create.nickname
+    nickname = base_nickname
+    suffix = 1
+
+    while True:
+        existing_user = await db.execute(
+            select(UserInfo).where(UserInfo.nickname == nickname)
+        )
+        existing_user = existing_user.scalar_one_or_none()
+
+        if not existing_user:
+            break
+
+        nickname = f"{base_nickname}_{suffix}"
+        suffix += 1
+
+    db_user = UserInfo(
+        nickname=nickname,
+        email=user_create.email,
+        provider_type=user_create.provider.name,
+        provider_id=int(user_create.provider_id)
+    )
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
+
+    return db_user
 
 async def get_user(db: AsyncSession, username: str) -> UserInfo:
     result : Result = await db.execute(select(UserInfo).filter(UserInfo.nickname == username))
