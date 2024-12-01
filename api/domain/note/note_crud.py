@@ -3,22 +3,32 @@ from sqlalchemy import select, func
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from api.models.ORM import Notes, UserInfo
+from api.models.ORM import Notes, UserInfo, Group
 from api.domain.note import note_schema
 
 async def search_notes(db: AsyncSession, user: UserInfo, skip: int = 0, limit: int = 10, keyword: str = ''):
-    query = select(Notes).filter(Notes.user_id == user.user_id)
-    
+    group_query = select(Group.id).filter(
+        func.json_contains(Group.members, f'{{"user_id": {user.user_id}}}').is_(True)
+    )
+    group_ids = (await db.execute(group_query)).scalars().all()
+    query = select(Notes).filter(
+        (Notes.user_id == user.user_id) | (Notes.teamspace_id.in_(group_ids))
+    )
+
     if keyword:
-        query = query.where(Notes.title.contains(keyword) | Notes.content.contains(keyword))
-    
+        query = query.where(
+            Notes.title.contains(keyword) | Notes.content.contains(keyword)
+        )
+
     count_query = select(func.count()).select_from(query.subquery())
     total = (await db.execute(count_query)).scalar_one()
-    
-    note_list = await db.execute(query.offset(skip).limit(limit)
-                                     .order_by(Notes.created_at.desc())
-                                     .distinct())
-    
+
+    note_list = await db.execute(
+        query.order_by(Notes.created_at.desc())
+             .offset(skip)
+             .limit(limit)
+    )
+
     return total, note_list.scalars().all()
 
 async def get_note(db: AsyncSession, note_id: int) -> Notes:

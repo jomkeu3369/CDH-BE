@@ -22,7 +22,11 @@ class TeamspaceChangeResponse(BaseModel):
 class TeamspaceResponse(BaseModel):
     teamspace_id: int
     note_id: int
-    invite_id: int
+    invite_id: str
     user_id: int
-    members: List[TeamspaceChangeValue]
+    members: Optional[List[TeamspaceChangeValue]]
+
+class InviteResponse(BaseModel):
+    teamspace_id: int
+    members: Optional[List[TeamspaceChangeValue]]
     
