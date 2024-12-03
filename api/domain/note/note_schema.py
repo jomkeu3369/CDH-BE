@@ -27,6 +27,7 @@ class NoteResponse(BaseModel):
     user_id: int
     title: str
     content: str
+    teamspace_id: int
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
 
@@ -49,6 +50,7 @@ class NoteListResponse(BaseModel):
     user_id: int
     content: str
     title: str
+    teamspace_id: int
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
     erd_id: Optional[int] = None
