@@ -53,7 +53,7 @@ async def teamspace_change(_teamspace_create: teamspace_schema.TeamspaceChange, 
     if note.teamspace_id is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="팀 스페이스를 중복해서 생성할 수 없습니다.")
-    group = await teamspace_crud.create_teamspace(db=db, teamspace_create=_teamspace_create, note=note ,user=current_user)
+    group = await teamspace_crud.create_teamspace(db=db, note=note ,user=current_user)
     return teamspace_schema.TeamspaceChangeResponse(
         user_id=current_user.user_id,
         teamspace_id=group.id

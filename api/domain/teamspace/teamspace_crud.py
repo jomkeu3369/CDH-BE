@@ -15,7 +15,7 @@ async def get_teamspace(db: AsyncSession, teamspcae_id: int) -> Group:
     )
     return qeustion.first()
 
-async def create_teamspace(db: AsyncSession, teamspace_create:teamspace_schema.TeamspaceChange, note: Notes, user: UserInfo):
+async def create_teamspace(db: AsyncSession, note: Notes, user: UserInfo):
     
     db_teamspace = Group(
         user_id=user.user_id,
