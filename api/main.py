@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Depends, File, UploadFile
-from starlette.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.domain.user import user_router
 from api.domain.setting import setting_router
