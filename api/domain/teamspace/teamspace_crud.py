@@ -38,7 +38,6 @@ async def add_member_to_group(db: AsyncSession, group: Group, user: UserInfo):
     new_member = {
         "user_id": user.user_id,
         "nickname": user.nickname,
-        "email": user.email,
         "joinedat":(datetime.now()).strftime("%Y-%m-%d %H:%M:%S")
     }
     group.members = (group.members or []) + [new_member]

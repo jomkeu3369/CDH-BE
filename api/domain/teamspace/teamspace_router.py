@@ -32,7 +32,6 @@ async def get_note(group_id: int, db: AsyncSession = Depends(get_db),
     return teamspace_schema.TeamspaceResponse(
         teamspace_id=group.id,
         note_id=note.note_id,
-        invite_id=group.invite_id,
         user_id=group.user_id,
         members=group.members
     )
