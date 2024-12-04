@@ -20,8 +20,7 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost:3000",
-    "https://j3pbl.kro.kr"
+    "*"
 ]
 
 app.add_middleware(
