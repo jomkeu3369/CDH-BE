@@ -17,5 +17,5 @@ class APICreate(BaseModel):
     user_id: int
 
 class APIUpdate(BaseModel):
-    title: str
-    content: str
+    title: list[str]
+    content: list[str] 
