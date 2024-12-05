@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
+import json
 
 from api.database import get_db
 from api.domain.note import note_crud
@@ -50,7 +51,17 @@ async def api_update(note_id: int, api_id:int, _api_update: api_schema.APIUpdate
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="수정 권한이 없습니다.")
     
-    await api_crud.update_api(db=db, db_api=api, api_update=_api_update)
+    try:
+        content_data = json.loads(_api_update.content)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    update_data = {
+        "title": _api_update.title,
+        "content": content_data
+    }
+
+    await api_crud.update_api(db=db, db_api=api, api_update=update_data)
     update_api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
     return update_api
 
