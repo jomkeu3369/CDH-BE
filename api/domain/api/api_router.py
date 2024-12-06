@@ -56,9 +56,19 @@ async def api_update(note_id: int, api_id:int, _api_update: api_schema.APIUpdate
     except json.JSONDecodeError:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
+    updated_content = [
+        {
+            "url": entry.get("url", ""),
+            "method": entry.get("method", "GET"),
+            "request": entry.get("request", ""),
+            "response": entry.get("response", "")
+        }
+    for entry in content_data
+        ]
+
     update_data = {
         "title": _api_update.title,
-        "content": content_data
+        "content": updated_content 
     }
 
     await api_crud.update_api(db=db, db_api=api, api_update=update_data)
