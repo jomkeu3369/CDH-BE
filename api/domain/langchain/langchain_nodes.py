@@ -211,7 +211,9 @@ async def generation(state: MainState):
         You're given notes data, ERD data, and API statement data, and you have to synthesize it to make an educated guess about how far along the project is and say why.
         You're answer should be very specific.
         You're Answer based on context.
-        
+        A proposal in FORMAT must provide at least 10 conditions that can be secured, each of which must be very long and detailed.
+        A proposal in FORMAT secures note_data based on proposals to get close to 100%.
+
         notes data:
         {note_data}
 
@@ -231,11 +233,11 @@ async def generation(state: MainState):
         - project progress percentage:
         - reason:
         - proposals:
-        - A perfect example of reaching 100%:
+        - example:
         - summary:
         """
     
-    model = ChatOpenAI(model="gpt-4o-mini", max_tokens=4096, temperature=0.4)
+    model = ChatOpenAI(model="gpt-4o-mini", max_tokens=16384, temperature=0.4)
     chain = PromptTemplate.from_template(template) | model | StrOutputParser()
     generation = await chain.ainvoke({"note_data": note_data, "erd_data": erd_data, "api_data": api_data, "web_search": web_search_context, "vectorDB": vector_store_context})
     return {"generation": generation}
