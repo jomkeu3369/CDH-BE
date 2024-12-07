@@ -50,26 +50,18 @@ async def api_update(note_id: int, api_id: int, _api_update: api_schema.APIUpdat
     if current_user.user_id != note.user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="수정 권한이 없습니다.")
 
-    try:
-        content_data = json.loads(_api_update.content)
-        if not isinstance(content_data, list):
-            raise ValueError("Content must be a list of JSON objects.")
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Invalid content format: {str(e)}")
+    if not isinstance(_api_update.content, dict):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Content must be a JSON object."
+        )
 
-    updated_content = []
-    for entry in content_data:
-        if not isinstance(entry, dict):
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Each content entry must be a JSON object."
-            )
-        updated_content.append({
-            "url": entry.get("url", ""),
-            "method": entry.get("method", "GET"),
-            "request": entry.get("request", ""),
-            "response": entry.get("response", ""),
-        })
+    updated_content = {
+        "url": _api_update.content.get("url", ""),
+        "method": _api_update.content.get("method", "GET"),
+        "request": _api_update.content.get("request", ""),
+        "response": _api_update.content.get("response", ""),
+    }
 
     update_data = {
         "title": _api_update.title,
@@ -79,6 +71,7 @@ async def api_update(note_id: int, api_id: int, _api_update: api_schema.APIUpdat
     await api_crud.update_api(db=db, db_api=api, api_update=update_data)
     updated_api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
     return updated_api
+
 
 # API 명세서 삭제
 @router.delete("/api/{note_id}/{api_id}", status_code=status.HTTP_204_NO_CONTENT)
