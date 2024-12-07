@@ -209,6 +209,7 @@ async def generation(state: MainState):
     template = """
         You're an analyst analyzing a project. 
         You're given notes data, ERD data, and API statement data, and you have to synthesize it to make an educated guess about how far along the project is and say why.
+        You're answer should be very specific.
         You're Answer based on context.
         
         notes data:
@@ -230,6 +231,7 @@ async def generation(state: MainState):
         - project progress percentage:
         - reason:
         - proposals:
+        - A perfect example of reaching 100%:
         - summary:
         """
     
