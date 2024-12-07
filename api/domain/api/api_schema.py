@@ -18,4 +18,4 @@ class APICreate(BaseModel):
 
 class APIUpdate(BaseModel):
     title: str
-    content: str
+    content: dict
