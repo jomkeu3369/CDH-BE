@@ -6,7 +6,7 @@ class APIs(BaseModel):
     api_id: int
     note_id: int
     title: str | None = None
-    content: str | None = None
+    content: dict | None = None
     updated_at: datetime.datetime | None = None
 
     class Config:

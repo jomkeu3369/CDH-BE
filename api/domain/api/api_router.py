@@ -50,25 +50,25 @@ async def api_update(note_id: int, api_id: int, _api_update: api_schema.APIUpdat
     if current_user.user_id != note.user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="수정 권한이 없습니다.")
 
-    if not isinstance(_api_update.content, dict):
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Content must be a JSON object."
-        )
+    # if not isinstance(_api_update.content, dict):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #         detail="Content must be a JSON object."
+    #     )
 
-    updated_content = {
-        "url": _api_update.content.get("url", ""),
-        "method": _api_update.content.get("method", "GET"),
-        "request": _api_update.content.get("request", ""),
-        "response": _api_update.content.get("response", ""),
-    }
+    # updated_content = {
+    #     "url": _api_update.content.get("url", ""),
+    #     "method": _api_update.content.get("method", "GET"),
+    #     "request": _api_update.content.get("request", ""),
+    #     "response": _api_update.content.get("response", ""),
+    # }
 
-    update_data = {
-        "title": _api_update.title,
-        "content": updated_content
-    }
-
-    await api_crud.update_api(db=db, db_api=api, api_update=update_data)
+    # update_data = {
+    #     "title": _api_update.title,
+    #     "content": updated_content
+    # }
+    
+    await api_crud.update_api(db=db, db_api=api, api_update=_api_update)
     updated_api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
     return updated_api
 
