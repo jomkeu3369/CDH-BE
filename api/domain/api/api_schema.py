@@ -6,7 +6,7 @@ class APIs(BaseModel):
     api_id: int
     note_id: int
     title: str | None = None
-    content: dict | None = None
+    content: list[dict] | None = None
     updated_at: datetime.datetime | None = None
 
     class Config:
@@ -18,4 +18,4 @@ class APICreate(BaseModel):
 
 class APIUpdate(BaseModel):
     title: str
-    content: dict
+    content: list[dict]
