@@ -27,6 +27,7 @@ class NoteResponse(BaseModel):
     user_id: int
     title: str
     content: str
+    is_teamspace: bool
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
 

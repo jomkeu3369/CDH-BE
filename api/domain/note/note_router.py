@@ -60,6 +60,7 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
         user_id=note.user_id,
         title=note.title,
         content=note.content,
+        is_teamspace=True if note.teamspace_id is not None else False,
         created_at=note.created_at,
         updated_at=note.updated_at
     )
