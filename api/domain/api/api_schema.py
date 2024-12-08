@@ -5,7 +5,7 @@ import datetime
 class APIs(BaseModel):
     api_id: int
     note_id: int
-    title: str | None = None
+    title: list[str] | None = None
     content: list[dict] | None = None
     updated_at: datetime.datetime | None = None
 
@@ -17,5 +17,5 @@ class APICreate(BaseModel):
     user_id: int
 
 class APIUpdate(BaseModel):
-    title: str
+    title: list[str]
     content: list[dict]

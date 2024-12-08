@@ -96,7 +96,7 @@ class API(Base):
     api_id = Column(Integer, primary_key=True, autoincrement=True)
     note_id = Column(Integer, ForeignKey('notes.note_id'), unique=True, nullable=False, comment='노트 고유 아이디')
     user_id = Column(Integer, ForeignKey('user_info.user_id'), nullable=False, comment='사용자 고유 아이디')
-    title = Column(String(100), nullable=True)
+    title = Column(JSON, nullable=True)
     content = Column(JSON, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now(), default=datetime.now)
     updated_at = Column(DateTime, nullable=True)
