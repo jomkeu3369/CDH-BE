@@ -13,10 +13,8 @@ class TeamspaceChange(BaseModel):
 class TeamspaceChangeResponse(BaseModel):
     user_id: int
     teamspace_id: int
-
-class TeamspaceChangeResponse(BaseModel):
-    user_id: int
-    teamspace_id: int
+    api_id: int
+    erd_id: int
 
 class TeamspaceResponse(BaseModel):
     teamspace_id: int
