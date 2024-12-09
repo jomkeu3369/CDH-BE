@@ -57,7 +57,8 @@ async def teamspace_change(_teamspace_create: teamspace_schema.TeamspaceChange, 
         user_id=current_user.user_id,
         teamspace_id=group.id,
         api_id=note.api.api_id,
-        erd_id=note.erd.erd_id
+        erd_id=note.erd.erd_id,
+        members=group.members
     )
 
 @router.post("/notes/{teamspace_id}/invite", response_model=teamspace_schema.InviteResponse, status_code=status.HTTP_200_OK)

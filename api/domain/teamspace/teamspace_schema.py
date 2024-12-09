@@ -15,6 +15,7 @@ class TeamspaceChangeResponse(BaseModel):
     teamspace_id: int
     api_id: int
     erd_id: int
+    members: Optional[List[TeamspaceChangeValue]]
 
 class TeamspaceResponse(BaseModel):
     teamspace_id: int
