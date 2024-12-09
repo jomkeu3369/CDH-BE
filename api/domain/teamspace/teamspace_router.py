@@ -16,10 +16,10 @@ router = APIRouter(
 )
 
 # 팀 스페이스 조회
-@router.get("/teamspace/{group_id}", response_model=teamspace_schema.TeamspaceResponse)
-async def get_note(group_id: int, db: AsyncSession = Depends(get_db),
+@router.get("/teamspace/{teamspace_id}", response_model=teamspace_schema.TeamspaceResponse)
+async def get_note(teamspace_id: int, db: AsyncSession = Depends(get_db),
                    current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
-    group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=group_id)
+    group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=teamspace_id)
     if not group:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
@@ -60,8 +60,8 @@ async def teamspace_change(_teamspace_create: teamspace_schema.TeamspaceChange, 
         erd_id=note.erd.erd_id
     )
 
-@router.post("/notes/{group_id}/invite", response_model=teamspace_schema.InviteResponse, status_code=status.HTTP_200_OK)
-async def invite_member_to_group(group_id: int, nickname: str, db: AsyncSession = Depends(get_db),
+@router.post("/notes/{teamspace_id}/invite", response_model=teamspace_schema.InviteResponse, status_code=status.HTTP_200_OK)
+async def invite_member_to_group(teamspace_id: int, nickname: str, db: AsyncSession = Depends(get_db),
                                  current_user:ORM.UserInfo = Depends(user_router.get_current_user)):
     
     user = await user_crud.get_user(db, username=nickname)
@@ -71,7 +71,7 @@ async def invite_member_to_group(group_id: int, nickname: str, db: AsyncSession 
             detail="닉네임에 해당하는 사용자를 찾을 수 없습니다."
         )
 
-    group = await teamspace_crud.get_teamspace(db, teamspcae_id=group_id)
+    group = await teamspace_crud.get_teamspace(db, teamspcae_id=teamspace_id)
     if not group:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
