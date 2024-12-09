@@ -212,7 +212,7 @@ async def generation(state: MainState):
         You're answer should be very specific.
         You're Answer based on context.
         A proposal in FORMAT must provide at least 10 conditions that can be secured, each of which must be very long and detailed.
-        A proposal in FORMAT secures note_data based on proposals to get close to 100%.
+       The examples in the FORMAT should be very, very detailed with notes data, ERD data, and API statement data so that your project is close to 100%.
 
         notes data:
         {note_data}
@@ -237,7 +237,7 @@ async def generation(state: MainState):
         - summary:
         """
     
-    model = ChatOpenAI(model="gpt-4o-mini", max_tokens=16384, temperature=0.4)
+    model = ChatOpenAI(model="gpt-4o", max_tokens=16384, temperature=0.4)
     chain = PromptTemplate.from_template(template) | model | StrOutputParser()
     generation = await chain.ainvoke({"note_data": note_data, "erd_data": erd_data, "api_data": api_data, "web_search": web_search_context, "vectorDB": vector_store_context})
     return {"generation": generation}
