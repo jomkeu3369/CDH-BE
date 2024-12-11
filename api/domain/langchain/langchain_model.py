@@ -36,6 +36,7 @@ def decide_to_generate(state: MainState):
 
 workflow = StateGraph(MainState)
 
+workflow.add_node("describe_erd", describe_erd)
 workflow.add_node("vectorDB_retriever", vectorDB_retriever)
 workflow.add_node("rewrite_query_without_counter", rewrite_query_without_counter)
 workflow.add_node("rewrite_query_with_counter", rewrite_query_with_counter)
@@ -45,7 +46,8 @@ workflow.add_node("web_retriever", web_retriever)
 workflow.add_node("generate", generation)
 workflow.add_node("grade_generation", grade_generation)
 
-workflow.add_edge(START, "rewrite_query_without_counter")
+workflow.add_edge(START, "describe_erd")
+workflow.add_edge("describe_erd", "rewrite_query_without_counter")
 workflow.add_edge("rewrite_query_without_counter", "vectorDB_retriever")
 workflow.add_edge("vectorDB_retriever", "grade_vectorDB_documents")
 

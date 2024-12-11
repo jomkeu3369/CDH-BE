@@ -1,10 +1,15 @@
 from datetime import datetime
 from sqlalchemy import select, func
+import os
 
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from api.models.ORM import Notes, UserInfo, ERD
 from api.domain.erd import erd_schema
+
+UPLOAD_DIR = "erd_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 async def get_erd_by_note_id(db: AsyncSession, note_id: int):
     query = await db.execute(
@@ -42,3 +47,17 @@ async def update_erd(db: AsyncSession, db_erd: ERD, erd_update: erd_schema.ERDUp
 async def delete_erd(db: AsyncSession, db_erd: ERD):
     await db.delete(db_erd)
     await db.commit()
+
+async def upload_erd(file, note_id:int, erd_id:int):
+    file_path = os.path.join(UPLOAD_DIR, f"note_{note_id}_erd_{erd_id}.png")
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+
+async def get_uploaded_erd(note_id:int, erd_id:int):
+    file_path = os.path.join(UPLOAD_DIR, f"note_{note_id}_erd_{erd_id}.png")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="데이터를 찾을 수 없습니다.")
+
+    return file_path
+

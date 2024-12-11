@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import base64
 
 from langchain_core.documents import Document
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
@@ -10,6 +11,35 @@ from langchain_core.output_parsers import StrOutputParser
 from typing import Dict, Any
 from api.domain.langchain.langchain_DB import db
 from api.domain.langchain.langchain_schema import MainState
+
+
+# ----------------------------
+# ERD 분석 노드
+# ----------------------------
+
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+async def describe_erd(state: MainState):
+    if state["erd_query"] is None:
+        return
+
+    base64_image = encode_image(state["erd_query"])
+    model = ChatOpenAI(model="gpt-4o-mini", max_tokens=4096, temperature=0)
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "이미지를 상세히 설명해주세요."},
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
+            ],
+        }
+    ]
+    
+    response = await model.agenerate([messages])
+    return {"erd_query": response.generations[0][0].text}
 
 
 # ----------------------------
