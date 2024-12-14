@@ -10,6 +10,7 @@ from api.models import ORM
 from api.domain.note import note_crud, note_schema
 from api.domain.erd import erd_crud, erd_schema
 from api.domain.api import api_crud, api_schema
+from api.domain.teamspace import teamspace_crud
 
 router = APIRouter(
     prefix="/stack/api/v1",
@@ -25,11 +26,16 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
     for note in _note_list:
         erd = await erd_crud.get_erd_by_note_id(db, note_id=note.note_id)
         api = await api_crud.get_api_by_note_id(db, note_id=note.note_id)
+        
+        if note.teamspace_id is not None:
+            group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=note.teamspace_id)
+        
         note_list_with_ids.append({
             "note_id": note.note_id,
             "user_id": note.user_id,
             "content": note.content,
             "teamspace_id": note.teamspace_id,
+            "member": group.member if group else [],
             "title": note.title,
             "created_at": note.created_at,
             "updated_at": note.updated_at,

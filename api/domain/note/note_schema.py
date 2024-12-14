@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from typing import Optional
+from typing import Optional, List
 import datetime
+from api.domain.teamspace import teamspace_schema
 
 class NoteRequest(BaseModel):
     pass
@@ -51,6 +52,7 @@ class NoteListResponse(BaseModel):
     content: str
     title: str
     teamspace_id: int | None = None
+    member: Optional[List[teamspace_schema.TeamspaceChangeValue]]
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
     erd_id: Optional[int] = None

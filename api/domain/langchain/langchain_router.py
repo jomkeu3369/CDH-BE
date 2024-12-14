@@ -33,9 +33,7 @@ async def invoke_langchain(note_id: int, db:AsyncSession = Depends(get_db),
 
     api_data = await api_crud.get_api(db=db, note_id=note_id, api_id=note_data.api.api_id)
     erd_data = await erd_crud.get_uploaded_erd(note_id=note_id, erd_id=note_data.erd.erd_id)
-    # erd_data = await erd_crud.get_erd(db=db, note_id=note_id, erd_id=note_data.erd.erd_id)
 
-    print(f"erd_data: {erd_data}")
     result = await graph.ainvoke(input={
         "counter": 0,
         "note_id": note_data.note_id,
