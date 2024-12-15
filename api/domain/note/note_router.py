@@ -36,7 +36,7 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
             "user_id": note.user_id,
             "content": note.content,
             "teamspace_id": note.teamspace_id,
-            "member": group.member if group is not None else [],
+            "member": group.members if group is not None else [],
             "title": note.title,
             "created_at": note.created_at,
             "updated_at": note.updated_at,
