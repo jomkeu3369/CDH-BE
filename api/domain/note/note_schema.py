@@ -31,6 +31,7 @@ class NoteResponse(BaseModel):
     is_teamspace: bool
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
+    member: Optional[List[teamspace_schema.TeamspaceChangeValue]]
 
 class NoteCreate(BaseModel):
     title: str
