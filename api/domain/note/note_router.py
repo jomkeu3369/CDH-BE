@@ -27,6 +27,7 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
         erd = await erd_crud.get_erd_by_note_id(db, note_id=note.note_id)
         api = await api_crud.get_api_by_note_id(db, note_id=note.note_id)
         
+        group = None
         if note.teamspace_id is not None:
             group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=note.teamspace_id)
         
@@ -35,7 +36,7 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
             "user_id": note.user_id,
             "content": note.content,
             "teamspace_id": note.teamspace_id,
-            "member": group.member if group else [],
+            "member": group.member if group is not None else [],
             "title": note.title,
             "created_at": note.created_at,
             "updated_at": note.updated_at,
