@@ -53,6 +53,7 @@ class NoteListResponse(BaseModel):
     content: str
     title: str
     teamspace_id: int | None = None
+    is_teamspace: bool
     member: Optional[List[teamspace_schema.TeamspaceChangeValue]]
     created_at: datetime.datetime
     updated_at: datetime.datetime | None = None
