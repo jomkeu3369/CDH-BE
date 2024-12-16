@@ -24,9 +24,9 @@ async def get_erd(note_id: int, erd_id: int, db: AsyncSession = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
     
-    if note.user_id != current_user.user_id:
-         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="권한이 없습니다.")
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="권한이 없습니다.")
 
     erd = await erd_crud.get_uploaded_erd(note_id, erd_id)
     return FileResponse(erd)
@@ -42,10 +42,10 @@ async def upload_erd(note_id: int, erd_id: int, file: UploadFile = File(...), db
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
     
-    if note.user_id != current_user.user_id:
-         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="권한이 없습니다.")
-
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="권한이 없습니다.")
+    
     await erd_crud.upload_erd(file, note_id, erd_id)
     return {"message": "erd 업로드"}
 

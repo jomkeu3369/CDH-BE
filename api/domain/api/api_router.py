@@ -8,6 +8,7 @@ from api.database import get_db
 from api.domain.note import note_crud
 from api.domain.api import api_schema, api_crud
 from api.domain.user import user_router
+from api.domain.teamspace import teamspace_crud
 from api.models import ORM
 
 router = APIRouter(
@@ -28,9 +29,10 @@ async def get_api(note_id: int, api_id:int, db: AsyncSession = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
 
-    if note.user_id != current_user.user_id:
-         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="권한이 없습니다.")
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="권한이 없습니다.")
+    
     return api
 
 # API 명세서 수정
@@ -47,27 +49,10 @@ async def api_update(note_id: int, api_id: int, _api_update: api_schema.APIUpdat
     if not note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="노트를 찾을 수 없습니다.")
 
-    if current_user.user_id != note.user_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="수정 권한이 없습니다.")
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 권한이 없습니다.")
 
-    # if not isinstance(_api_update.content, dict):
-    #     raise HTTPException(
-    #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    #         detail="Content must be a JSON object."
-    #     )
-
-    # updated_content = {
-    #     "url": _api_update.content.get("url", ""),
-    #     "method": _api_update.content.get("method", "GET"),
-    #     "request": _api_update.content.get("request", ""),
-    #     "response": _api_update.content.get("response", ""),
-    # }
-
-    # update_data = {
-    #     "title": _api_update.title,
-    #     "content": updated_content
-    # }
-    
     await api_crud.update_api(db=db, db_api=api, api_update=_api_update)
     updated_api = await api_crud.get_api(db, note_id=note_id, api_id=api_id)
     return updated_api

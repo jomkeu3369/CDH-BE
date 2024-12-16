@@ -64,14 +64,9 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     if note.teamspace_id is not None:
         group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=note.teamspace_id)
 
-    if group is None: # 팀스페이스가 아닐 때
-        if note.user_id != current_user.user_id: # 본인 노트가 아니면 오류
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="권한이 없습니다.")
-    else: # 팀스페이스가 있다면
-        if not any(member["user_id"] == current_user.user_id for member in group.members): # 팀스페이스 목록에 본인이 없다면 오류
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="권한이 없습니다.")
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="권한이 없습니다.")
     
     return note_schema.NoteResponse(
         note_id=note.note_id,
@@ -107,9 +102,10 @@ async def note_update(note_id:int, _note_update: note_schema.NoteUpdate, db: Asy
     if not db_note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
-    if current_user.user_id != db_note.user_info.user_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="수정 권한이 없습니다.")
+    
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 권한이 없습니다.")
     
     await note_crud.update_note(db=db, db_note=db_note, note_update=_note_update)
     update_note = await note_crud.get_note(db, note_id=note_id)
@@ -123,8 +119,9 @@ async def note_delete(note_id:int, db: AsyncSession = Depends(get_db),
     if not db_note:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
-    if current_user.user_id != db_note.user_info.user_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="삭제 권한이 없습니다.")
+    
+    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
+    if not is_used:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 권한이 없습니다.")
     
     await note_crud.delete_note(db=db, db_note=db_note)

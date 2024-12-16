@@ -4,7 +4,8 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from api.models.ORM import Notes, UserInfo, Group
-from api.domain.note import note_schema
+from api.domain.note import note_schema, note_crud
+from api.domain.teamspace import teamspace_crud
 
 async def search_notes(db: AsyncSession, user: UserInfo, skip: int = 0, limit: int = 10, keyword: str = ''):
     group_query = select(Group.id).filter(
@@ -71,3 +72,23 @@ async def update_note(db: AsyncSession, db_note: Notes, note_update: note_schema
 async def delete_note(db: AsyncSession, db_note: Notes):
     await db.delete(db_note)
     await db.commit()
+
+async def is_use(db: AsyncSession, note_id:int, user_id:int):
+
+    note = await note_crud.get_note(db, note_id=note_id)
+    if not note:
+        return False
+    
+    group = None
+    if note.teamspace_id is not None:
+        group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=note.teamspace_id)
+
+    if group is None: # 팀스페이스가 아닐 때
+        if note.user_id != user_id: # 본인 노트가 아니면 오류
+            return False
+        
+    else: # 팀스페이스가 있다면
+        if not any(member["user_id"] == user_id for member in group.members): # 팀스페이스 목록에 본인이 없다면 오류
+            return False
+        
+    return True
