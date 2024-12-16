@@ -73,8 +73,6 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="권한이 없습니다.")
     
-    
-
     return note_schema.NoteResponse(
         note_id=note.note_id,
         user_id=note.user_id,
