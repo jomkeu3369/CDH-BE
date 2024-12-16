@@ -64,7 +64,7 @@ async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
     if note.teamspace_id is not None:
         group = await teamspace_crud.get_teamspace(db=db, teamspcae_id=note.teamspace_id)
 
-    if group is not None: # 팀스페이스가 아닐 때
+    if group is None: # 팀스페이스가 아닐 때
         if note.user_id != current_user.user_id: # 본인 노트가 아니면 오류
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="권한이 없습니다.")
