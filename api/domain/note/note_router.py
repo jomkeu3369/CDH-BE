@@ -50,7 +50,6 @@ async def note_list(db: AsyncSession = Depends(get_db), page: int = 0, size: int
         "note_list": note_list_with_ids
     }
 
-
 # 노트 조회
 @router.get("/notes/{note_id}", response_model=note_schema.NoteResponse, tags=["notes"])
 async def get_note(note_id: int, db: AsyncSession = Depends(get_db),
@@ -120,8 +119,7 @@ async def note_delete(note_id:int, db: AsyncSession = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="데이터를 찾을 수 없습니다.")
     
-    is_used = await note_crud.is_use(db, note_id, current_user.user_id)
-    if not is_used:
+    if db_note.user_id != current_user.user_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 권한이 없습니다.")
     
     await note_crud.delete_note(db=db, db_note=db_note)
