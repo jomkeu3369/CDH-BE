@@ -4,6 +4,8 @@
 
 ## 프로젝트 개요
 
+<img width="799" height="257" alt="백엔드시스템" src="https://github.com/user-attachments/assets/f47a325b-a62c-4ffa-827a-99068dbc6eb7" />
+
 **STACK**은 개발자들의 협업 프로젝트를 종합적으로 관리하고 더 나은 프로젝트를 제작할 수 있도록 돕는 AI 기반 프로젝트 관리 시스템입니다.
 이 프로젝트는 다음과 같은 기능을 제공합니다.
 
