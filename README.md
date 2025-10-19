@@ -2,9 +2,10 @@
 
 2024년 종합전공PBL "J3PBL" 팀의 백엔드 레포지토리입니다.
 
-## 프로젝트 개요
+## 전체 프로젝트 파이프라인
+<img width="5141" height="2077" alt="프로젝트 종합 파이프라인 (2)" src="https://github.com/user-attachments/assets/ffe88fb4-2251-413d-949f-6f155be2a65c" />
 
-<img width="799" height="257" alt="백엔드시스템" src="https://github.com/user-attachments/assets/f47a325b-a62c-4ffa-827a-99068dbc6eb7" />
+## 프로젝트 개요
 
 **STACK**은 개발자들의 협업 프로젝트를 종합적으로 관리하고 더 나은 프로젝트를 제작할 수 있도록 돕는 AI 기반 프로젝트 관리 시스템입니다.
 이 프로젝트는 다음과 같은 기능을 제공합니다.
